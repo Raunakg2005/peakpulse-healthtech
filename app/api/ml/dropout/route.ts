@@ -1,0 +1,30 @@
+import { NextRequest, NextResponse } from 'next/server';
+
+const ML_API_URL = process.env.ML_API_URL || 'http://localhost:8000';
+
+export async function POST(req: NextRequest) {
+    try {
+        const body = await req.json();
+
+        const response = await fetch(`${ML_API_URL}/api/predict/dropout`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body),
+        });
+
+        if (!response.ok) {
+            throw new Error(`ML API error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return NextResponse.json(data);
+    } catch (error) {
+        console.error('Dropout prediction error:', error);
+        return NextResponse.json(
+            { error: 'Failed to get dropout prediction' },
+            { status: 500 }
+        );
+    }
+}

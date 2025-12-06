@@ -1,0 +1,10 @@
+challenge_difficulty
+days_active
+avg_steps
+meditation_streak
+avg_sleep
+challenge_completion_rate
+social_score
+difficulty_completion_interaction
+steps_social_interaction
+active_ratio

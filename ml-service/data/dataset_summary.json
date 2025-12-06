@@ -1,0 +1,27 @@
+{
+  "generated_at": "2025-12-05 22:58:58",
+  "n_users": 1000,
+  "n_days": 90,
+  "datasets": {
+    "users": {
+      "rows": 1000,
+      "columns": 7
+    },
+    "activities": {
+      "rows": 90000,
+      "columns": 10
+    },
+    "challenges": {
+      "rows": 7305,
+      "columns": 9
+    },
+    "social": {
+      "rows": 39374,
+      "columns": 4
+    },
+    "features": {
+      "rows": 1000,
+      "columns": 17
+    }
+  }
+}

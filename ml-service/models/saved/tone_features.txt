@@ -1,0 +1,10 @@
+challenge_completion_rate
+behavioral_consistency
+social_engagement_score
+completion_trend
+steps_trend
+engagement_momentum
+days_active
+avg_steps_last_7_days
+social_interactions_count
+response_rate_to_notifications

@@ -1,0 +1,15 @@
+activity_slope
+three_day_decline
+consistency_score
+momentum
+days_active
+total_days
+avg_steps_last_7_days
+avg_meditation_minutes
+avg_sleep_hours
+challenge_completion_rate
+total_points_earned
+social_engagement_score
+social_interactions_count
+response_rate_to_notifications
+mood_correlation_with_exercise

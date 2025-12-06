@@ -1,0 +1,12 @@
+current_streak
+avg_streak
+completion_rate
+recent_completion_rate
+days_active
+avg_steps
+meditation_minutes
+social_score
+challenge_completion
+streak_completion_interaction
+recent_trend
+steps_normalized

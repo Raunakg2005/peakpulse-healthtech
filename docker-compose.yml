@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # ML Service (Python FastAPI)
+  ml-service:
+    build: ./ml-service
+    container_name: healthtech-ml
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./ml-service:/app
+      - ./ml-service/models:/app/models
+      - ./ml-service/data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ENV=production
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - healthtech-network
+    restart: unless-stopped
+
+  # Next.js Frontend
+  frontend:
+    build: .
+    container_name: healthtech-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_ML_API_URL=http://ml-service:8000
+    depends_on:
+      - ml-service
+    networks:
+      - healthtech-network
+    restart: unless-stopped
+
+networks:
+  healthtech-network:
+    driver: bridge
+
+# Optional: Add MongoDB if you need persistent storage
+# Uncomment below to add database
+#  mongodb:
+#    image: mongo:latest
+#    container_name: healthtech-db
+#    ports:
+#      - "27017:27017"
+#    volumes:
+#      - mongodb_data:/data/db
+#    environment:
+#      - MONGO_INITDB_ROOT_USERNAME=admin
+#      - MONGO_INITDB_ROOT_PASSWORD=password123
+#    networks:
+#      - healthtech-network
+#    restart: unless-stopped
+
+#volumes:
+#  mongodb_data:

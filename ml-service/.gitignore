@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+# ML Models
+models/saved/*.pkl
+models/saved/*.h5
+*.joblib
+
+# Data
+data/*.csv
+data/*.json
+!data/data_generator.py
+!data/dataset_summary.json
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
