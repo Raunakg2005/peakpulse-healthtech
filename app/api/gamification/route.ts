@@ -9,18 +9,23 @@ import { BADGES, checkBadgeEligibility, POINT_REWARDS, calculateLevel } from '@/
 export async function POST(request: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
-        
+
         if (!session?.user?.email) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
         await connectDB();
-        
+
         const body = await request.json();
         const { action, metadata } = body;
 
         // Get point reward for action
-        const pointsEarned = POINT_REWARDS[action as keyof typeof POINT_REWARDS] || 0;
+        let pointsEarned = POINT_REWARDS[action as keyof typeof POINT_REWARDS] || 0;
+
+        // If action is complete_activity, use duration as points if available
+        if (action === 'complete_activity' && metadata?.duration) {
+            pointsEarned = metadata.duration;
+        }
 
         if (pointsEarned === 0) {
             return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
@@ -28,7 +33,7 @@ export async function POST(request: NextRequest) {
 
         // Find user and update points
         const user = await User.findOne({ email: session.user.email });
-        
+
         if (!user) {
             return NextResponse.json({ error: 'User not found' }, { status: 404 });
         }
@@ -49,7 +54,7 @@ export async function POST(request: NextRequest) {
         // Check for new badges
         const currentBadges = user.stats?.badges || [];
         const newBadges: string[] = [];
-        
+
         // Get updated user stats for badge checking
         const updatedStats = {
             currentStreak: user.stats?.currentStreak || 0,
@@ -62,11 +67,11 @@ export async function POST(request: NextRequest) {
         for (const badge of BADGES) {
             // Skip if already earned
             if (currentBadges.includes(badge.id)) continue;
-            
+
             // Check eligibility
             if (checkBadgeEligibility(badge, updatedStats)) {
                 newBadges.push(badge.id);
-                
+
                 // Award badge points
                 if (badge.points > 0) {
                     await User.findByIdAndUpdate(user._id, {
@@ -84,7 +89,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Prepare badge details for response
-        const badgeDetails = newBadges.map(badgeId => 
+        const badgeDetails = newBadges.map(badgeId =>
             BADGES.find(b => b.id === badgeId)
         ).filter(Boolean);
 
@@ -120,28 +125,28 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
-        
+
         if (!session?.user?.email) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
         await connectDB();
-        
+
         const user = await User.findOne({ email: session.user.email });
-        
+
         if (!user) {
             return NextResponse.json({ error: 'User not found' }, { status: 404 });
         }
 
         const earnedBadgeIds = user.stats?.badges || [];
-        
+
         // Get earned badges with details
-        const earnedBadges = earnedBadgeIds.map(badgeId => 
+        const earnedBadges = earnedBadgeIds.map(badgeId =>
             BADGES.find(b => b.id === badgeId)
         ).filter(Boolean);
 
         // Get available (not earned) badges
-        const availableBadges = BADGES.filter(badge => 
+        const availableBadges = BADGES.filter(badge =>
             !earnedBadgeIds.includes(badge.id)
         );
 
@@ -156,13 +161,13 @@ export async function GET(request: NextRequest) {
         const badgeProgress = availableBadges.map(badge => {
             const eligible = checkBadgeEligibility(badge, userStats);
             let progress = 0;
-            
+
             // Calculate progress percentage
             const { criteria } = badge;
-            const currentValue = userStats[criteria.metric as keyof typeof userStats] || 
-                                (criteria.type === 'streak' ? userStats.currentStreak : 0);
+            const currentValue = userStats[criteria.metric as keyof typeof userStats] ||
+                (criteria.type === 'streak' ? userStats.currentStreak : 0);
             progress = Math.min(100, (currentValue / criteria.threshold) * 100);
-            
+
             return {
                 badge,
                 progress: Math.round(progress),

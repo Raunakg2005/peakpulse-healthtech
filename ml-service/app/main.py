@@ -11,7 +11,11 @@ from app.models.predictor import DropoutPredictor, StreakPredictor
 from app.models.personalizer import MotivationGenerator, DifficultyCalibrator
 
 # Import Quantum ML models
-from app.quantum.hybrid_model import QuantumEnhancedDropoutPredictor
+try:
+    from app.quantum.hybrid_model import QuantumEnhancedDropoutPredictor
+except ImportError:
+    QuantumEnhancedDropoutPredictor = None
+    logging.warning("Quantum modules could not be imported. Running in classical-only mode.")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -37,8 +41,11 @@ difficulty_calibrator = DifficultyCalibrator()
 
 # Initialize Quantum ML models
 try:
-    quantum_dropout_predictor = QuantumEnhancedDropoutPredictor(n_qubits=4)
-    logger.info("✅ Quantum ML models initialized")
+    if QuantumEnhancedDropoutPredictor:
+        quantum_dropout_predictor = QuantumEnhancedDropoutPredictor(n_qubits=4)
+        logger.info("✅ Quantum ML models initialized")
+    else:
+        raise ImportError("QuantumEnhancedDropoutPredictor class not available")
 except Exception as e:
     quantum_dropout_predictor = None
     logger.warning(f"⚠️  Quantum ML disabled: {e}")

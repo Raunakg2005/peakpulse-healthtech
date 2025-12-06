@@ -10,7 +10,7 @@ export default function OnboardingPage() {
     const { data: session } = useSession();
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
-    
+
     const [formData, setFormData] = useState({
         // Step 1: Basic Info
         age: '',
@@ -19,17 +19,17 @@ export default function OnboardingPage() {
         heightUnit: 'cm',
         weight: '',
         weightUnit: 'kg',
-        
+
         // Step 2: Health Goals
         primaryGoal: '',
         secondaryGoals: [] as string[],
-        
+
         // Step 3: Current Habits
         exerciseFrequency: '',
         meditationExperience: '',
         sleepHours: '',
         activityLevel: '',
-        
+
         // Step 4: Preferences
         preferredActivityTime: '',
         motivationStyle: '',
@@ -47,40 +47,43 @@ export default function OnboardingPage() {
 
     const handleSubmit = async () => {
         setLoading(true);
-        
+
         try {
+            const payload = {
+                profile: {
+                    age: formData.age ? parseInt(formData.age) : undefined,
+                    gender: formData.gender || undefined,
+                    height: formData.height ? parseFloat(formData.height) : undefined,
+                    heightUnit: formData.heightUnit,
+                    weight: formData.weight ? parseFloat(formData.weight) : undefined,
+                    weightUnit: formData.weightUnit,
+                    activityLevel: formData.activityLevel || undefined,
+                    primaryGoal: formData.primaryGoal || undefined,
+                    secondaryGoals: formData.secondaryGoals.length > 0 ? formData.secondaryGoals : undefined,
+                    preferences: {
+                        exerciseFrequency: formData.exerciseFrequency || undefined,
+                        meditationExperience: formData.meditationExperience || undefined,
+                        sleepHours: formData.sleepHours || undefined,
+                        preferredActivityTime: formData.preferredActivityTime || undefined,
+                        motivationStyle: formData.motivationStyle || undefined,
+                        challengeDifficulty: formData.challengeDifficulty
+                    }
+                },
+                onboardingCompleted: true
+            };
+
             // Save onboarding data to user profile
             const res = await fetch('/api/user/profile', {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    profile: {
-                        age: parseInt(formData.age),
-                        gender: formData.gender,
-                        height: parseFloat(formData.height),
-                        heightUnit: formData.heightUnit,
-                        weight: parseFloat(formData.weight),
-                        weightUnit: formData.weightUnit,
-                        activityLevel: formData.activityLevel,
-                        primaryGoal: formData.primaryGoal,
-                        secondaryGoals: formData.secondaryGoals,
-                        preferences: {
-                            exerciseFrequency: formData.exerciseFrequency,
-                            meditationExperience: formData.meditationExperience,
-                            sleepHours: formData.sleepHours,
-                            preferredActivityTime: formData.preferredActivityTime,
-                            motivationStyle: formData.motivationStyle,
-                            challengeDifficulty: formData.challengeDifficulty
-                        }
-                    },
-                    onboardingCompleted: true
-                })
+                body: JSON.stringify(payload)
             });
 
             if (res.ok) {
                 router.push('/dashboard');
             } else {
-                console.error('Failed to save onboarding data');
+                const errorData = await res.json();
+                console.error('Failed to save onboarding data:', errorData);
             }
         } catch (error) {
             console.error('Onboarding error:', error);
@@ -129,7 +132,7 @@ export default function OnboardingPage() {
                     {step === 1 && (
                         <div className="space-y-6">
                             <h2 className="text-2xl font-bold text-slate-900 mb-4">Tell us about yourself</h2>
-                            
+
                             <div className="grid md:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 mb-2">
@@ -217,8 +220,8 @@ export default function OnboardingPage() {
                                             <p className="text-sm text-slate-600 mb-1">Your BMI</p>
                                             <p className="text-2xl font-bold text-slate-900">
                                                 {(() => {
-                                                    const heightInM = formData.heightUnit === 'cm' 
-                                                        ? parseFloat(formData.height) / 100 
+                                                    const heightInM = formData.heightUnit === 'cm'
+                                                        ? parseFloat(formData.height) / 100
                                                         : parseFloat(formData.height) * 0.3048;
                                                     const weightInKg = formData.weightUnit === 'kg'
                                                         ? parseFloat(formData.weight)
@@ -231,8 +234,8 @@ export default function OnboardingPage() {
                                         <div className="text-right">
                                             <p className="text-sm font-medium text-teal-700">
                                                 {(() => {
-                                                    const heightInM = formData.heightUnit === 'cm' 
-                                                        ? parseFloat(formData.height) / 100 
+                                                    const heightInM = formData.heightUnit === 'cm'
+                                                        ? parseFloat(formData.height) / 100
                                                         : parseFloat(formData.height) * 0.3048;
                                                     const weightInKg = formData.weightUnit === 'kg'
                                                         ? parseFloat(formData.weight)
@@ -247,13 +250,13 @@ export default function OnboardingPage() {
                                             <p className="text-xs text-slate-500 mt-1">
                                                 Daily calorie burn: ~{(() => {
                                                     const age = parseInt(formData.age) || 25;
-                                                    const heightInCm = formData.heightUnit === 'cm' 
-                                                        ? parseFloat(formData.height) 
+                                                    const heightInCm = formData.heightUnit === 'cm'
+                                                        ? parseFloat(formData.height)
                                                         : parseFloat(formData.height) * 30.48;
                                                     const weightInKg = formData.weightUnit === 'kg'
                                                         ? parseFloat(formData.weight)
                                                         : parseFloat(formData.weight) * 0.453592;
-                                                    
+
                                                     // Mifflin-St Jeor Equation for BMR
                                                     let bmr;
                                                     if (formData.gender === 'Male') {
@@ -276,7 +279,7 @@ export default function OnboardingPage() {
                     {step === 2 && (
                         <div className="space-y-6">
                             <h2 className="text-2xl font-bold text-slate-900 mb-4">What are your health goals?</h2>
-                            
+
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-3">
                                     Primary Goal
@@ -288,18 +291,15 @@ export default function OnboardingPage() {
                                             <button
                                                 key={goal.id}
                                                 onClick={() => setFormData({ ...formData, primaryGoal: goal.id })}
-                                                className={`p-4 rounded-lg border-2 transition flex items-center gap-3 ${
-                                                    formData.primaryGoal === goal.id
+                                                className={`p-4 rounded-lg border-2 transition flex items-center gap-3 ${formData.primaryGoal === goal.id
                                                         ? 'border-teal-600 bg-teal-50'
                                                         : 'border-slate-200 hover:border-slate-300'
-                                                }`}
+                                                    }`}
                                             >
-                                                <Icon className={`w-5 h-5 ${
-                                                    formData.primaryGoal === goal.id ? 'text-teal-600' : 'text-slate-400'
-                                                }`} />
-                                                <span className={`font-medium ${
-                                                    formData.primaryGoal === goal.id ? 'text-teal-700' : 'text-slate-700'
-                                                }`}>
+                                                <Icon className={`w-5 h-5 ${formData.primaryGoal === goal.id ? 'text-teal-600' : 'text-slate-400'
+                                                    }`} />
+                                                <span className={`font-medium ${formData.primaryGoal === goal.id ? 'text-teal-700' : 'text-slate-700'
+                                                    }`}>
                                                     {goal.label}
                                                 </span>
                                             </button>
@@ -321,11 +321,10 @@ export default function OnboardingPage() {
                                                 key={goal.id}
                                                 onClick={() => toggleSecondaryGoal(goal.id)}
                                                 disabled={!isSelected && formData.secondaryGoals.length >= 2}
-                                                className={`p-3 rounded-lg border transition flex items-center gap-2 text-sm ${
-                                                    isSelected
+                                                className={`p-3 rounded-lg border transition flex items-center gap-2 text-sm ${isSelected
                                                         ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
                                                         : 'border-slate-200 hover:border-slate-300 disabled:opacity-50'
-                                                }`}
+                                                    }`}
                                             >
                                                 <Icon className="w-4 h-4" />
                                                 {goal.label}
@@ -341,7 +340,7 @@ export default function OnboardingPage() {
                     {step === 3 && (
                         <div className="space-y-6">
                             <h2 className="text-2xl font-bold text-slate-900 mb-4">Your current habits</h2>
-                            
+
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-2">
                                     How often do you exercise?
@@ -422,20 +421,20 @@ export default function OnboardingPage() {
                                             <p className="text-lg font-bold text-slate-900">
                                                 {(() => {
                                                     const age = parseInt(formData.age);
-                                                    const heightInCm = formData.heightUnit === 'cm' 
-                                                        ? parseFloat(formData.height) 
+                                                    const heightInCm = formData.heightUnit === 'cm'
+                                                        ? parseFloat(formData.height)
                                                         : parseFloat(formData.height) * 30.48;
                                                     const weightInKg = formData.weightUnit === 'kg'
                                                         ? parseFloat(formData.weight)
                                                         : parseFloat(formData.weight) * 0.453592;
-                                                    
+
                                                     let bmr;
                                                     if (formData.gender === 'Male') {
                                                         bmr = 10 * weightInKg + 6.25 * heightInCm - 5 * age + 5;
                                                     } else {
                                                         bmr = 10 * weightInKg + 6.25 * heightInCm - 5 * age - 161;
                                                     }
-                                                    
+
                                                     const activityFactors: any = {
                                                         sedentary: 1.2,
                                                         lightly_active: 1.375,
@@ -443,7 +442,7 @@ export default function OnboardingPage() {
                                                         very_active: 1.725,
                                                         extra_active: 1.9
                                                     };
-                                                    
+
                                                     return Math.round(bmr * activityFactors[formData.activityLevel]);
                                                 })()}
                                             </p>
@@ -454,20 +453,20 @@ export default function OnboardingPage() {
                                             <p className="text-lg font-bold text-green-600">
                                                 {(() => {
                                                     const age = parseInt(formData.age);
-                                                    const heightInCm = formData.heightUnit === 'cm' 
-                                                        ? parseFloat(formData.height) 
+                                                    const heightInCm = formData.heightUnit === 'cm'
+                                                        ? parseFloat(formData.height)
                                                         : parseFloat(formData.height) * 30.48;
                                                     const weightInKg = formData.weightUnit === 'kg'
                                                         ? parseFloat(formData.weight)
                                                         : parseFloat(formData.weight) * 0.453592;
-                                                    
+
                                                     let bmr;
                                                     if (formData.gender === 'Male') {
                                                         bmr = 10 * weightInKg + 6.25 * heightInCm - 5 * age + 5;
                                                     } else {
                                                         bmr = 10 * weightInKg + 6.25 * heightInCm - 5 * age - 161;
                                                     }
-                                                    
+
                                                     const activityFactors: any = {
                                                         sedentary: 1.2,
                                                         lightly_active: 1.375,
@@ -475,7 +474,7 @@ export default function OnboardingPage() {
                                                         very_active: 1.725,
                                                         extra_active: 1.9
                                                     };
-                                                    
+
                                                     return Math.round((bmr * activityFactors[formData.activityLevel]) - 500);
                                                 })()}
                                             </p>
@@ -486,20 +485,20 @@ export default function OnboardingPage() {
                                             <p className="text-lg font-bold text-orange-600">
                                                 {(() => {
                                                     const age = parseInt(formData.age);
-                                                    const heightInCm = formData.heightUnit === 'cm' 
-                                                        ? parseFloat(formData.height) 
+                                                    const heightInCm = formData.heightUnit === 'cm'
+                                                        ? parseFloat(formData.height)
                                                         : parseFloat(formData.height) * 30.48;
                                                     const weightInKg = formData.weightUnit === 'kg'
                                                         ? parseFloat(formData.weight)
                                                         : parseFloat(formData.weight) * 0.453592;
-                                                    
+
                                                     let bmr;
                                                     if (formData.gender === 'Male') {
                                                         bmr = 10 * weightInKg + 6.25 * heightInCm - 5 * age + 5;
                                                     } else {
                                                         bmr = 10 * weightInKg + 6.25 * heightInCm - 5 * age - 161;
                                                     }
-                                                    
+
                                                     const activityFactors: any = {
                                                         sedentary: 1.2,
                                                         lightly_active: 1.375,
@@ -507,7 +506,7 @@ export default function OnboardingPage() {
                                                         very_active: 1.725,
                                                         extra_active: 1.9
                                                     };
-                                                    
+
                                                     return Math.round((bmr * activityFactors[formData.activityLevel]) + 500);
                                                 })()}
                                             </p>
@@ -523,7 +522,7 @@ export default function OnboardingPage() {
                     {step === 4 && (
                         <div className="space-y-6">
                             <h2 className="text-2xl font-bold text-slate-900 mb-4">Personalize your experience</h2>
-                            
+
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-2">
                                     Preferred time for activities
@@ -533,11 +532,10 @@ export default function OnboardingPage() {
                                         <button
                                             key={time}
                                             onClick={() => setFormData({ ...formData, preferredActivityTime: time.toLowerCase() })}
-                                            className={`px-4 py-3 rounded-lg border-2 transition ${
-                                                formData.preferredActivityTime === time.toLowerCase()
+                                            className={`px-4 py-3 rounded-lg border-2 transition ${formData.preferredActivityTime === time.toLowerCase()
                                                     ? 'border-teal-600 bg-teal-50 text-teal-700 font-medium'
                                                     : 'border-slate-200 hover:border-slate-300'
-                                            }`}
+                                                }`}
                                         >
                                             {time}
                                         </button>
@@ -558,11 +556,10 @@ export default function OnboardingPage() {
                                         <button
                                             key={style.value}
                                             onClick={() => setFormData({ ...formData, motivationStyle: style.value })}
-                                            className={`w-full p-4 rounded-lg border-2 transition text-left ${
-                                                formData.motivationStyle === style.value
+                                            className={`w-full p-4 rounded-lg border-2 transition text-left ${formData.motivationStyle === style.value
                                                     ? 'border-teal-600 bg-teal-50'
                                                     : 'border-slate-200 hover:border-slate-300'
-                                            }`}
+                                                }`}
                                         >
                                             <div className="font-medium text-slate-900">{style.label}</div>
                                             <div className="text-sm text-slate-500">{style.desc}</div>
@@ -584,15 +581,13 @@ export default function OnboardingPage() {
                                         <button
                                             key={difficulty.value}
                                             onClick={() => setFormData({ ...formData, challengeDifficulty: difficulty.value })}
-                                            className={`p-3 rounded-lg border-2 transition ${
-                                                formData.challengeDifficulty === difficulty.value
+                                            className={`p-3 rounded-lg border-2 transition ${formData.challengeDifficulty === difficulty.value
                                                     ? 'border-teal-600 bg-teal-50'
                                                     : 'border-slate-200 hover:border-slate-300'
-                                            }`}
+                                                }`}
                                         >
-                                            <div className={`font-medium ${
-                                                formData.challengeDifficulty === difficulty.value ? 'text-teal-700' : 'text-slate-900'
-                                            }`}>
+                                            <div className={`font-medium ${formData.challengeDifficulty === difficulty.value ? 'text-teal-700' : 'text-slate-900'
+                                                }`}>
                                                 {difficulty.label}
                                             </div>
                                             <div className="text-xs text-slate-500">{difficulty.desc}</div>
@@ -614,7 +609,7 @@ export default function OnboardingPage() {
                             Back
                         </button>
                     )}
-                    
+
                     <button
                         onClick={() => {
                             if (step < 4) {

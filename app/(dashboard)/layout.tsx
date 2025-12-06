@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
     Home,
@@ -14,6 +14,7 @@ import {
     Medal,
     LogOut
 } from 'lucide-react';
+import { getAvatarById, getDefaultAvatar } from '@/lib/avatars';
 
 export default function DashboardLayout({
     children,
@@ -54,6 +55,8 @@ export default function DashboardLayout({
         { name: 'Leaderboard', href: '/leaderboard', icon: Medal },
     ];
 
+    const userAvatar = getAvatarById((session?.user as any)?.avatar) || getDefaultAvatar();
+
     return (
         <div className="min-h-screen bg-slate-50">
             {/* Top Navbar - Responsive */}
@@ -70,10 +73,23 @@ export default function DashboardLayout({
 
                     <div className="flex items-center gap-2 md:gap-4">
                         <div className="hidden md:flex items-center gap-3">
-                            <div className="text-right">
-                                <p className="text-sm font-medium text-slate-900">{session?.user?.name}</p>
-                                <p className="text-xs text-slate-500">{session?.user?.email}</p>
+                            <div className="flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-200 rounded-full mr-2">
+                                <Trophy className="w-4 h-4 text-amber-500 fill-amber-500" />
+                                <span className="font-bold text-amber-700">{(session?.user as any).totalPoints || 0}</span>
                             </div>
+                            <Link
+                                href="/profile"
+                                className="flex items-center gap-2 hover:opacity-80 transition group"
+                                title="View Profile"
+                            >
+                                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-md group-hover:scale-105 transition-transform">
+                                    <img
+                                        src={userAvatar.imageUrl}
+                                        alt={userAvatar.name}
+                                        className="w-full h-full object-cover"
+                                    />
+                                </div>
+                            </Link>
                         </div>
                         <button
                             onClick={() => router.push('/api/auth/signout')}

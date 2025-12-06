@@ -45,13 +45,14 @@ export async function PATCH(req: NextRequest) {
         }
 
         const body = await req.json();
-        const { name, avatar, profile } = body;
+        const { name, avatar, profile, onboardingCompleted } = body;
 
         await connectDB();
 
         const updateData: any = {};
         if (name) updateData.name = name;
         if (avatar) updateData.avatar = avatar;
+        if (typeof onboardingCompleted === 'boolean') updateData.onboardingCompleted = onboardingCompleted;
         if (profile) {
             if (profile.age !== undefined) updateData['profile.age'] = profile.age;
             if (profile.gender) updateData['profile.gender'] = profile.gender;

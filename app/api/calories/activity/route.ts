@@ -22,7 +22,7 @@ const MET_VALUES: any = {
 export async function POST(request: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
-        
+
         if (!session?.user?.email) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
@@ -38,10 +38,10 @@ export async function POST(request: NextRequest) {
         }
 
         await connectDB();
-        
+
         // Get user data for weight calculation
-        const user = await User.findOne({ 
-            email: session.user.email 
+        const user = await User.findOne({
+            email: session.user.email
         });
 
         if (!user) {
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Convert weight to kg if needed
-        const weightInKg = user.profile?.weightUnit === 'kg' 
+        const weightInKg = user.profile?.weightUnit === 'kg'
             ? user.profile?.weight || 70
             : (user.profile?.weight || 154) * 0.453592;
 
@@ -57,12 +57,12 @@ export async function POST(request: NextRequest) {
         // Calories = MET * weight(kg) * duration(hours)
         const met = MET_VALUES[name] || 5.0;
         const durationHours = parseInt(duration) / 60;
-        
+
         // Adjust MET based on intensity
         let intensityMultiplier = 1.0;
         if (intensity === 'light') intensityMultiplier = 0.7;
         if (intensity === 'vigorous') intensityMultiplier = 1.3;
-        
+
         const caloriesBurned = Math.round(met * weightInKg * durationHours * intensityMultiplier);
 
         console.log(`📊 Logging activity for ${session.user.email}: ${name} (${duration}min, ${caloriesBurned} kcal)`);
@@ -70,7 +70,8 @@ export async function POST(request: NextRequest) {
         // Save activity to database
         const activity = await Activity.create({
             userId: session.user.email,
-            type: name,
+            type: 'exercise', // Type should be the category
+            name: name,       // Name is the specific activity (Running, etc)
             duration: parseInt(duration),
             intensity: intensity || 'moderate',
             caloriesBurned,
@@ -98,11 +99,11 @@ export async function POST(request: NextRequest) {
                     }
                 })
             });
-            
+
             if (gamificationResponse.ok) {
                 const gamificationData = await gamificationResponse.json();
                 console.log(`🎮 Awarded ${gamificationData.pointsEarned} points`);
-                
+
                 return NextResponse.json({
                     success: true,
                     activity: {

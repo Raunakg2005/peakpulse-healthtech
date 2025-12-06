@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Trophy, Medal, TrendingUp, Crown, Zap } from 'lucide-react';
+import { getAvatarById } from '@/lib/avatars';
 
 interface LeaderboardUser {
     rank: number;
@@ -25,7 +26,7 @@ export default function LeaderboardPage() {
 
     const fetchLeaderboard = async () => {
         try {
-            const response = await fetch(`/api/leaderboard?limit=50`);
+            const response = await fetch(`/api/leaderboard?limit=all`);
             const data = await response.json();
             setLeaderboard(data.leaderboard || []);
         } catch (error) {
@@ -74,11 +75,10 @@ export default function LeaderboardPage() {
                     <button
                         key={tf}
                         onClick={() => setTimeframe(tf)}
-                        className={`px-6 py-2 rounded-lg font-medium transition ${
-                            timeframe === tf
-                                ? 'bg-teal-600 text-white'
-                                : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
-                        }`}
+                        className={`px-6 py-2 rounded-lg font-medium transition ${timeframe === tf
+                            ? 'bg-teal-600 text-white'
+                            : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                            }`}
                     >
                         {tf === 'all' ? 'All Time' : tf === 'month' ? 'This Month' : 'This Week'}
                     </button>
@@ -91,9 +91,13 @@ export default function LeaderboardPage() {
                     {/* 2nd Place */}
                     <div className="flex flex-col items-center">
                         <div className="relative mb-2">
-                            <div className="w-20 h-20 rounded-full bg-slate-200 flex items-center justify-center border-4 border-slate-300 shadow-lg">
+                            <div className="w-20 h-20 rounded-full bg-slate-200 flex items-center justify-center border-4 border-slate-300 shadow-lg overflow-hidden">
                                 {topThree[1].avatar ? (
-                                    <img src={topThree[1].avatar} alt={topThree[1].name} className="w-full h-full rounded-full" />
+                                    <img
+                                        src={getAvatarById(topThree[1].avatar)?.imageUrl || topThree[1].avatar}
+                                        alt={topThree[1].name}
+                                        className="w-full h-full object-cover"
+                                    />
                                 ) : (
                                     <span className="text-2xl font-bold text-slate-600">
                                         {topThree[1].name.charAt(0)}
@@ -104,8 +108,8 @@ export default function LeaderboardPage() {
                                 <Medal className="w-5 h-5 text-white fill-white" />
                             </div>
                         </div>
-                        <div className="bg-gradient-to-b from-slate-200 to-slate-300 rounded-t-lg p-4 w-32 text-center border-2 border-slate-400 h-28">
-                            <p className="font-bold text-slate-800 mb-1 truncate">{topThree[1].name}</p>
+                        <div className="bg-gradient-to-b from-slate-200 to-slate-300 rounded-t-lg p-4 w-32 text-center border-2 border-slate-400 h-28 flex flex-col justify-center">
+                            <p className="font-bold text-slate-800 mb-1 truncate w-full">{topThree[1].name}</p>
                             <p className="text-2xl font-bold text-slate-700">{topThree[1].points}</p>
                             <p className="text-xs text-slate-600">points</p>
                         </div>
@@ -114,9 +118,13 @@ export default function LeaderboardPage() {
                     {/* 1st Place */}
                     <div className="flex flex-col items-center">
                         <div className="relative mb-2">
-                            <div className="w-24 h-24 rounded-full bg-amber-200 flex items-center justify-center border-4 border-amber-400 shadow-xl animate-pulse-slow">
+                            <div className="w-24 h-24 rounded-full bg-amber-200 flex items-center justify-center border-4 border-amber-400 shadow-xl animate-pulse-slow overflow-hidden">
                                 {topThree[0].avatar ? (
-                                    <img src={topThree[0].avatar} alt={topThree[0].name} className="w-full h-full rounded-full" />
+                                    <img
+                                        src={getAvatarById(topThree[0].avatar)?.imageUrl || topThree[0].avatar}
+                                        alt={topThree[0].name}
+                                        className="w-full h-full object-cover"
+                                    />
                                 ) : (
                                     <span className="text-3xl font-bold text-amber-700">
                                         {topThree[0].name.charAt(0)}
@@ -127,8 +135,8 @@ export default function LeaderboardPage() {
                                 <Crown className="w-6 h-6 text-white fill-white" />
                             </div>
                         </div>
-                        <div className="bg-gradient-to-b from-amber-200 to-amber-300 rounded-t-lg p-4 w-36 text-center border-2 border-amber-500 h-36">
-                            <p className="font-bold text-amber-900 mb-1 truncate">{topThree[0].name}</p>
+                        <div className="bg-gradient-to-b from-amber-200 to-amber-300 rounded-t-lg p-4 w-36 text-center border-2 border-amber-500 h-36 flex flex-col justify-center">
+                            <p className="font-bold text-amber-900 mb-1 truncate w-full">{topThree[0].name}</p>
                             <p className="text-3xl font-bold text-amber-800">{topThree[0].points}</p>
                             <p className="text-xs text-amber-700">points</p>
                             <Zap className="w-5 h-5 mx-auto mt-2 text-amber-600 fill-amber-600" />
@@ -138,9 +146,13 @@ export default function LeaderboardPage() {
                     {/* 3rd Place */}
                     <div className="flex flex-col items-center">
                         <div className="relative mb-2">
-                            <div className="w-20 h-20 rounded-full bg-orange-200 flex items-center justify-center border-4 border-orange-300 shadow-lg">
+                            <div className="w-20 h-20 rounded-full bg-orange-200 flex items-center justify-center border-4 border-orange-300 shadow-lg overflow-hidden">
                                 {topThree[2].avatar ? (
-                                    <img src={topThree[2].avatar} alt={topThree[2].name} className="w-full h-full rounded-full" />
+                                    <img
+                                        src={getAvatarById(topThree[2].avatar)?.imageUrl || topThree[2].avatar}
+                                        alt={topThree[2].name}
+                                        className="w-full h-full object-cover"
+                                    />
                                 ) : (
                                     <span className="text-2xl font-bold text-orange-600">
                                         {topThree[2].name.charAt(0)}
@@ -151,8 +163,8 @@ export default function LeaderboardPage() {
                                 <Medal className="w-5 h-5 text-white fill-white" />
                             </div>
                         </div>
-                        <div className="bg-gradient-to-b from-orange-200 to-orange-300 rounded-t-lg p-4 w-32 text-center border-2 border-orange-400 h-24">
-                            <p className="font-bold text-orange-800 mb-1 truncate">{topThree[2].name}</p>
+                        <div className="bg-gradient-to-b from-orange-200 to-orange-300 rounded-t-lg p-4 w-32 text-center border-2 border-orange-400 h-24 flex flex-col justify-center">
+                            <p className="font-bold text-orange-800 mb-1 truncate w-full">{topThree[2].name}</p>
                             <p className="text-2xl font-bold text-orange-700">{topThree[2].points}</p>
                             <p className="text-xs text-orange-600">points</p>
                         </div>
@@ -176,18 +188,21 @@ export default function LeaderboardPage() {
                     {restOfLeaderboard.map((user) => (
                         <div
                             key={user.rank}
-                            className={`grid grid-cols-12 gap-4 p-4 items-center hover:bg-slate-50 transition ${
-                                user.rank <= 10 ? 'font-medium' : ''
-                            }`}
+                            className={`grid grid-cols-12 gap-4 p-4 items-center hover:bg-slate-50 transition ${user.rank <= 10 ? 'font-medium' : ''
+                                }`}
                         >
                             <div className="col-span-1 flex items-center justify-center">
                                 {getRankIcon(user.rank)}
                             </div>
 
                             <div className="col-span-5 flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center text-white font-bold shadow">
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center text-white font-bold shadow overflow-hidden">
                                     {user.avatar ? (
-                                        <img src={user.avatar} alt={user.name} className="w-full h-full rounded-full" />
+                                        <img
+                                            src={getAvatarById(user.avatar)?.imageUrl || user.avatar}
+                                            alt={user.name}
+                                            className="w-full h-full object-cover"
+                                        />
                                     ) : (
                                         user.name.charAt(0)
                                     )}

@@ -3,13 +3,15 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { User, Mail, Calendar, Scale, Ruler, Activity, Target, Save, Edit2 } from 'lucide-react';
+import { AVATARS, getAvatarById, getDefaultAvatar } from '@/lib/avatars';
 
 export default function ProfilePage() {
-    const { data: session } = useSession();
+    const { data: session, update: updateSession } = useSession();
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [editing, setEditing] = useState(false);
     const [userData, setUserData] = useState<any>(null);
+    const [selectedAvatar, setSelectedAvatar] = useState<string>('');
     const [formData, setFormData] = useState({
         name: '',
         age: '',
@@ -39,7 +41,8 @@ export default function ProfilePage() {
             const data = await response.json();
             const user = data.user || data; // Handle both response formats
             setUserData(user);
-            
+            setSelectedAvatar(user.avatar || 'boy_1');
+
             // Populate form data
             setFormData({
                 name: user.name || '',
@@ -74,6 +77,7 @@ export default function ProfilePage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     name: formData.name,
+                    avatar: selectedAvatar,
                     profile: {
                         age: parseInt(formData.age),
                         gender: formData.gender,
@@ -98,6 +102,7 @@ export default function ProfilePage() {
 
             if (response.ok) {
                 await fetchUserProfile();
+                await updateSession();
                 setEditing(false);
             }
         } catch (error) {
@@ -109,14 +114,14 @@ export default function ProfilePage() {
 
     const calculateBMI = () => {
         if (!formData.height || !formData.weight) return null;
-        
-        const heightInM = formData.heightUnit === 'cm' 
-            ? parseFloat(formData.height) / 100 
+
+        const heightInM = formData.heightUnit === 'cm'
+            ? parseFloat(formData.height) / 100
             : parseFloat(formData.height) * 0.3048;
         const weightInKg = formData.weightUnit === 'kg'
             ? parseFloat(formData.weight)
             : parseFloat(formData.weight) * 0.453592;
-        
+
         return (weightInKg / (heightInM * heightInM)).toFixed(1);
     };
 
@@ -130,8 +135,8 @@ export default function ProfilePage() {
     const calculateCalories = () => {
         if (!formData.height || !formData.weight || !formData.age || !formData.gender) return null;
 
-        const heightInCm = formData.heightUnit === 'cm' 
-            ? parseFloat(formData.height) 
+        const heightInCm = formData.heightUnit === 'cm'
+            ? parseFloat(formData.height)
             : parseFloat(formData.height) * 30.48;
         const weightInKg = formData.weightUnit === 'kg'
             ? parseFloat(formData.weight)
@@ -154,7 +159,7 @@ export default function ProfilePage() {
         };
 
         const maintenance = Math.round(bmr * (activityFactors[formData.activityLevel] || 1.2));
-        
+
         return {
             bmr: Math.round(bmr),
             maintenance,
@@ -202,10 +207,45 @@ export default function ProfilePage() {
                 </button>
             </div>
 
+            {/* Avatar Selection */}
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+                <h2 className="text-xl font-bold text-slate-900 mb-4">Choose Your Avatar</h2>
+                <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
+                    {AVATARS.map((avatar) => {
+                        const isSelected = selectedAvatar === avatar.id;
+                        return (
+                            <button
+                                key={avatar.id}
+                                onClick={() => editing && setSelectedAvatar(avatar.id)}
+                                disabled={!editing}
+                                className={`relative p-2 rounded-xl border-2 transition-all group ${isSelected
+                                        ? 'border-teal-500 bg-teal-50 scale-105'
+                                        : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                                    } ${!editing ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}
+                            >
+                                <div className="aspect-square relative w-full rounded-lg overflow-hidden mb-2 shadow-sm">
+                                    <img
+                                        src={avatar.imageUrl}
+                                        alt={avatar.name}
+                                        className="w-full h-full object-cover transition-transform group-hover:scale-110"
+                                    />
+                                </div>
+                                <p className="text-xs text-center font-medium text-slate-700">{avatar.name}</p>
+                                {isSelected && (
+                                    <div className="absolute -top-2 -right-2 w-5 h-5 bg-teal-500 rounded-full flex items-center justify-center shadow-md border-2 border-white">
+                                        <span className="text-white text-[10px] font-bold">✓</span>
+                                    </div>
+                                )}
+                            </button>
+                        );
+                    })}
+                </div>
+            </div>
+
             {/* Basic Information */}
             <div className="bg-white rounded-2xl shadow-lg p-6">
                 <h2 className="text-xl font-bold text-slate-900 mb-4">Basic Information</h2>
-                
+
                 <div className="grid md:grid-cols-2 gap-6">
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-2">
@@ -270,7 +310,7 @@ export default function ProfilePage() {
             {/* Physical Stats */}
             <div className="bg-white rounded-2xl shadow-lg p-6">
                 <h2 className="text-xl font-bold text-slate-900 mb-4">Physical Stats</h2>
-                
+
                 <div className="grid md:grid-cols-2 gap-6 mb-6">
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-2">
@@ -355,7 +395,7 @@ export default function ProfilePage() {
             {/* Activity & Goals */}
             <div className="bg-white rounded-2xl shadow-lg p-6">
                 <h2 className="text-xl font-bold text-slate-900 mb-4">Activity & Goals</h2>
-                
+
                 <div className="grid md:grid-cols-2 gap-6">
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-2">
@@ -439,7 +479,7 @@ export default function ProfilePage() {
             {/* Preferences */}
             <div className="bg-white rounded-2xl shadow-lg p-6">
                 <h2 className="text-xl font-bold text-slate-900 mb-4">Preferences</h2>
-                
+
                 <div className="grid md:grid-cols-2 gap-6">
                     <div>
                         <label className="block text-sm font-medium text-slate-700 mb-2">
@@ -518,7 +558,7 @@ export default function ProfilePage() {
             {userData?.stats && (
                 <div className="bg-white rounded-2xl shadow-lg p-6">
                     <h2 className="text-xl font-bold text-slate-900 mb-4">Your Stats</h2>
-                    
+
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div className="text-center p-4 bg-gradient-to-br from-teal-50 to-teal-100 rounded-lg">
                             <p className="text-3xl font-bold text-teal-700">{userData.stats.totalPoints}</p>

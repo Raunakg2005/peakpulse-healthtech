@@ -71,6 +71,6 @@ const ActivitySchema = new Schema<IActivity>({
 ActivitySchema.index({ userId: 1, completedAt: -1 });
 ActivitySchema.index({ userId: 1, type: 1, completedAt: -1 });
 
-const Activity: Model<IActivity> = mongoose.models.Activity || mongoose.model<IActivity>('Activity', ActivitySchema);
+const Activity: Model<IActivity> = (mongoose.models.Activity as Model<IActivity>) || mongoose.model<IActivity>('Activity', ActivitySchema);
 
 export default Activity;

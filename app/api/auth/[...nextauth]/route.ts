@@ -64,11 +64,26 @@ export const authOptions: NextAuthOptions = {
             if (user) {
                 token.id = user.id;
             }
+            // Always fetch latest data for id, points and avatar
+            if (token.id) {
+                try {
+                    await connectDB();
+                    const dbUser = await User.findById(token.id).select('stats.totalPoints avatar');
+                    if (dbUser) {
+                        token.totalPoints = dbUser.stats?.totalPoints || 0;
+                        token.avatar = dbUser.avatar;
+                    }
+                } catch (e) {
+                    console.error('Failed to fetch user data for token', e);
+                }
+            }
             return token;
         },
         async session({ session, token }) {
             if (session?.user) {
                 (session.user as any).id = token.id;
+                (session.user as any).totalPoints = token.totalPoints;
+                (session.user as any).avatar = token.avatar;
             }
             return session;
         },

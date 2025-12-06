@@ -60,11 +60,11 @@ export default function CalorieTracker() {
 
             if (response.ok) {
                 const result = await response.json();
-                
+
                 // Handle gamification notifications
                 if (result.gamification) {
                     const newNotifications: Notification[] = [];
-                    
+
                     // Add points notification
                     if (result.gamification.pointsEarned) {
                         newNotifications.push({
@@ -72,7 +72,7 @@ export default function CalorieTracker() {
                             points: result.gamification.pointsEarned
                         });
                     }
-                    
+
                     // Add level up notification
                     if (result.gamification.leveledUp) {
                         newNotifications.push({
@@ -83,7 +83,7 @@ export default function CalorieTracker() {
                             }
                         });
                     }
-                    
+
                     // Add badge notifications
                     if (result.gamification.newBadges && result.gamification.newBadges.length > 0) {
                         result.gamification.newBadges.forEach((badge: any) => {
@@ -93,16 +93,20 @@ export default function CalorieTracker() {
                             });
                         });
                     }
-                    
+
                     setNotifications(newNotifications);
                 }
-                
+
                 setNewActivity({ name: '', duration: '', intensity: 'moderate' });
                 setShowAddActivity(false);
                 fetchCalorieData();
+            } else {
+                const errorData = await response.json();
+                alert(`Failed to log activity: ${errorData.error || 'Unknown error'}`);
             }
         } catch (error) {
             console.error('Failed to add activity:', error);
+            alert('Failed to connect to server. Please try again.');
         }
     };
 
@@ -154,19 +158,19 @@ export default function CalorieTracker() {
             <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-6 mb-6 border border-orange-200">
                 <div className="grid md:grid-cols-3 gap-6">
                     <div>
-                        <p className="text-sm text-slate-600 mb-1">BMR (Resting)</p>
-                        <p className="text-3xl font-bold text-slate-900">{calorieData.bmr}</p>
-                        <p className="text-xs text-slate-500">kcal/day</p>
+                        <p className="text-sm text-slate-600 mb-1">Resting Burn (BMR)</p>
+                        <p className="text-3xl font-bold text-slate-500">{calorieData.bmr}</p>
+                        <p className="text-xs text-slate-500">kcal/day (base)</p>
                     </div>
                     <div>
-                        <p className="text-sm text-slate-600 mb-1">Activities</p>
+                        <p className="text-sm text-slate-600 mb-1">Active Burn</p>
                         <p className="text-3xl font-bold text-orange-600">+{calorieData.activityCalories}</p>
-                        <p className="text-xs text-slate-500">kcal burned</p>
+                        <p className="text-xs text-slate-500">kcal from exercise</p>
                     </div>
                     <div>
-                        <p className="text-sm text-slate-600 mb-1">Total Burned</p>
+                        <p className="text-sm text-slate-600 mb-1">Total Daily Burn</p>
                         <p className="text-3xl font-bold text-red-600">{calorieData.totalBurned}</p>
-                        <p className="text-xs text-slate-500">kcal today</p>
+                        <p className="text-xs text-slate-500">Resting + Active</p>
                     </div>
                 </div>
 
@@ -194,7 +198,7 @@ export default function CalorieTracker() {
             {showAddActivity && (
                 <div className="bg-slate-50 rounded-xl p-6 mb-6 border border-slate-200">
                     <h4 className="font-bold text-slate-900 mb-4">Log New Activity</h4>
-                    
+
                     <div className="grid md:grid-cols-2 gap-4 mb-4">
                         <div>
                             <label className="block text-sm font-medium text-slate-700 mb-2">
@@ -237,11 +241,10 @@ export default function CalorieTracker() {
                                 <button
                                     key={intensity}
                                     onClick={() => setNewActivity({ ...newActivity, intensity })}
-                                    className={`px-4 py-2 rounded-lg border-2 capitalize transition ${
-                                        newActivity.intensity === intensity
-                                            ? 'border-teal-600 bg-teal-50 text-teal-700 font-medium'
-                                            : 'border-slate-200 hover:border-slate-300'
-                                    }`}
+                                    className={`px-4 py-2 rounded-lg border-2 capitalize transition ${newActivity.intensity === intensity
+                                        ? 'border-teal-600 bg-teal-50 text-teal-700 font-medium'
+                                        : 'border-slate-200 hover:border-slate-300'
+                                        }`}
                                 >
                                     {intensity}
                                 </button>
@@ -257,8 +260,8 @@ export default function CalorieTracker() {
                                     ~{(() => {
                                         const activity = activityTypes.find(a => a.name === newActivity.name);
                                         if (!activity) return 0;
-                                        const intensityMultiplier = newActivity.intensity === 'light' ? 0.7 : 
-                                                                   newActivity.intensity === 'vigorous' ? 1.3 : 1.0;
+                                        const intensityMultiplier = newActivity.intensity === 'light' ? 0.7 :
+                                            newActivity.intensity === 'vigorous' ? 1.3 : 1.0;
                                         // Assuming average weight of 70kg for estimation
                                         return Math.round(activity.met * 70 * (parseInt(newActivity.duration) / 60) * intensityMultiplier);
                                     })()}

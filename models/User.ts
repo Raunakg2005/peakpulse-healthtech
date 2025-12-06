@@ -11,6 +11,7 @@ export interface IUser {
     verificationToken?: string;
     resetToken?: string;
     resetTokenExpiry?: Date;
+    onboardingCompleted: boolean;
 
     profile: {
         age?: number;
@@ -152,10 +153,15 @@ const UserSchema = new Schema<IUser>({
         preferredTone: String,
         lastPrediction: Date,
     },
+
+    onboardingCompleted: {
+        type: Boolean,
+        default: false,
+    },
 }, {
     timestamps: true,
 });
 
-const User: Model<IUser> = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
+const User: Model<IUser> = (mongoose.models.User as Model<IUser>) || mongoose.model<IUser>('User', UserSchema);
 
 export default User;

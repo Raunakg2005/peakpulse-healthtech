@@ -7,12 +7,16 @@ export async function GET(req: NextRequest) {
         await connectDB();
 
         const { searchParams } = new URL(req.url);
-        const limit = parseInt(searchParams.get('limit') || '10');
-
-        const leaderboard = await User.find()
+        const limitParam = searchParams.get('limit');
+        const query = User.find()
             .select('name email avatar stats.totalPoints stats.currentStreak stats.level stats.badges')
-            .sort({ 'stats.totalPoints': -1 })
-            .limit(limit);
+            .sort({ 'stats.totalPoints': -1 });
+
+        if (limitParam && limitParam !== 'all') {
+            query.limit(parseInt(limitParam));
+        }
+
+        const leaderboard = await query;
 
         const rankedUsers = leaderboard.map((user, index) => ({
             rank: index + 1,
