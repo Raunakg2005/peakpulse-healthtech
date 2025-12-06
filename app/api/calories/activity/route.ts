@@ -69,14 +69,16 @@ export async function POST(request: NextRequest) {
 
         // Save activity to database
         const activity = await Activity.create({
-            userId: session.user.email,
-            type: 'exercise', // Type should be the category
-            name: name,       // Name is the specific activity (Running, etc)
+            userId: user._id, // Use ObjectId
+            type: 'exercise',
+            name: name,
             duration: parseInt(duration),
             intensity: intensity || 'moderate',
             caloriesBurned,
             met,
+            points: parseInt(duration), // Default points = duration
             timestamp: new Date(),
+            completedAt: new Date(),
             completed: true
         });
 
@@ -104,14 +106,15 @@ export async function POST(request: NextRequest) {
                 const gamificationData = await gamificationResponse.json();
                 console.log(`🎮 Awarded ${gamificationData.pointsEarned} points`);
 
+                // Update activity with actual points earned if different
+                if (gamificationData.pointsEarned !== activity.points) {
+                    activity.points = gamificationData.pointsEarned;
+                    await activity.save();
+                }
+
                 return NextResponse.json({
                     success: true,
-                    activity: {
-                        name,
-                        duration: parseInt(duration),
-                        calories: caloriesBurned,
-                        timestamp: new Date()
-                    },
+                    activity: activity,
                     gamification: gamificationData
                 });
             }

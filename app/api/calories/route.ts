@@ -8,16 +8,16 @@ import Activity from '@/models/Activity';
 export async function GET(request: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
-        
+
         if (!session?.user?.email) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
         await connectDB();
-        
+
         // Get user data
-        const user = await User.findOne({ 
-            email: session.user.email 
+        const user = await User.findOne({
+            email: session.user.email
         });
 
         if (!user) {
@@ -53,9 +53,12 @@ export async function GET(request: NextRequest) {
         // Get today's activities
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        
+
         const activities = await Activity.find({
-            userId: session.user.email,
+            $or: [
+                { userId: user._id },
+                { userId: session.user.email }
+            ],
             timestamp: { $gte: today }
         });
 
@@ -82,7 +85,7 @@ export async function GET(request: NextRequest) {
             calorieGoal,
             maintenanceCalories,
             activities: activities.map((activity: any) => ({
-                name: activity.type,
+                name: activity.name,
                 duration: activity.duration,
                 calories: activity.caloriesBurned,
                 timestamp: activity.timestamp

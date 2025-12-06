@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -11,21 +12,22 @@ export default function ConnectedDashboard() {
     const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        async function loadData() {
-            try {
-                const [dashboardData, mlData] = await Promise.all([
-                    fetchDashboardData().catch(() => ({ data: null })),
-                    fetchMLPredictions().catch(() => null),
-                ]);
-                setData({ ...dashboardData.data, ml: mlData });
-            } catch (error) {
-                console.error('Error loading dashboard:', error);
-            } finally {
-                setLoading(false);
-            }
+    const refreshDashboard = async () => {
+        try {
+            const [dashboardData, mlData] = await Promise.all([
+                fetchDashboardData().catch(() => ({ data: null })),
+                fetchMLPredictions().catch(() => null),
+            ]);
+            setData({ ...dashboardData.data, ml: mlData });
+        } catch (error) {
+            console.error('Error loading dashboard:', error);
+        } finally {
+            setLoading(false);
         }
-        loadData();
+    };
+
+    useEffect(() => {
+        refreshDashboard();
     }, []);
 
     if (loading) {
@@ -44,9 +46,6 @@ export default function ConnectedDashboard() {
                     <h1 className="text-3xl font-bold text-slate-900">Welcome back!</h1>
                     <p className="text-slate-600 mt-1">Here's your health overview</p>
                 </div>
-                <button className="bg-gradient-to-r from-teal-600 to-emerald-600 text-white px-4 py-2 rounded-lg font-medium hover:from-teal-700 hover:to-emerald-700 transition">
-                    Log Activity
-                </button>
             </div>
 
             {/* Stats Grid - Connected to Real Data */}
@@ -171,15 +170,19 @@ export default function ConnectedDashboard() {
             <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                 <h3 className="text-lg font-bold text-slate-900 mb-4">Recent Activity</h3>
                 {data?.recentActivities && data.recentActivities.length > 0 ? (
-                    <div className="space-y-3">
-                        {data.recentActivities.slice(0, 5).map((activity: any, idx: number) => (
-                            <div key={idx} className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0">
+                    <div className="space-y-3 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
+                        {data.recentActivities.map((activity: any, idx: number) => (
+                            <div key={idx} className="flex items-center justify-between py-2 border-b border-slate-100 last:border-0 hover:bg-slate-50 transition px-2 rounded-lg">
                                 <div>
                                     <p className="font-medium text-slate-900">{activity.name}</p>
-                                    <p className="text-sm text-slate-500">{activity.type}</p>
+                                    <div className="flex items-center gap-2 text-sm text-slate-500">
+                                        <span>{activity.type}</span>
+                                        <span>•</span>
+                                        <span>{new Date(activity.completedAt || activity.timestamp).toLocaleString()}</span>
+                                    </div>
                                 </div>
-                                <span className="text-sm text-teal-600 font-medium">
-                                    +{activity.points} pts
+                                <span className="text-sm text-teal-600 font-medium bg-teal-50 px-2 py-1 rounded">
+                                    +{activity.points || activity.duration || 0} pts
                                 </span>
                             </div>
                         ))}
@@ -194,10 +197,10 @@ export default function ConnectedDashboard() {
             {/* Two Column Layout */}
             <div className="grid lg:grid-cols-2 gap-6">
                 {/* Calorie Tracker */}
-                <CalorieTracker />
-                
-                {/* User Stats Widget */}
-                <UserStatsWidget />
+                <CalorieTracker onActivityLogged={refreshDashboard} />
+
+                {/* User StatsWidget */}
+                <UserStatsWidget key={data?.totalPoints} />
             </div>
         </div>
     );

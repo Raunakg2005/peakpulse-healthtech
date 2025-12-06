@@ -23,7 +23,11 @@ interface Notification {
     points?: number;
 }
 
-export default function CalorieTracker() {
+interface CalorieTrackerProps {
+    onActivityLogged?: () => void;
+}
+
+export default function CalorieTracker({ onActivityLogged }: CalorieTrackerProps) {
     const [calorieData, setCalorieData] = useState<CalorieData | null>(null);
     const [loading, setLoading] = useState(true);
     const [showAddActivity, setShowAddActivity] = useState(false);
@@ -100,6 +104,9 @@ export default function CalorieTracker() {
                 setNewActivity({ name: '', duration: '', intensity: 'moderate' });
                 setShowAddActivity(false);
                 fetchCalorieData();
+                if (onActivityLogged) {
+                    onActivityLogged();
+                }
             } else {
                 const errorData = await response.json();
                 alert(`Failed to log activity: ${errorData.error || 'Unknown error'}`);

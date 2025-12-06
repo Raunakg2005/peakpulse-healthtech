@@ -9,6 +9,7 @@ export interface IActivity {
     intensity?: 'low' | 'moderate' | 'high' | 'light' | 'vigorous';
     calories?: number;
     caloriesBurned?: number;
+    points?: number;
     met?: number;
     completed?: boolean;
     timestamp?: Date;
@@ -56,6 +57,10 @@ const ActivitySchema = new Schema<IActivity>({
     timestamp: {
         type: Date,
         default: Date.now
+    },
+    points: {
+        type: Number,
+        default: 0
     },
     notes: String,
     completedAt: {

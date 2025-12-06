@@ -33,6 +33,7 @@ export interface IUser {
         level: number;
         currentStreak: number;
         longestStreak: number;
+        lastActiveDate?: Date;
         badges: string[];
         completedChallenges: number;
     };
@@ -135,6 +136,9 @@ const UserSchema = new Schema<IUser>({
         longestStreak: {
             type: Number,
             default: 0,
+        },
+        lastActiveDate: {
+            type: Date,
         },
         badges: {
             type: [String],

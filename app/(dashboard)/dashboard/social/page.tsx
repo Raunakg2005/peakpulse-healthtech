@@ -1,10 +1,39 @@
+'use client';
+
 import { Heart, MessageCircle, TrendingUp, Award, Users, Share2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { getAvatarById } from '@/lib/avatars';
+
+interface LeaderboardUser {
+    rank: number;
+    name: string;
+    points: number;
+    streak: number;
+    avatar?: string;
+    isCurrentUser?: boolean;
+}
 
 export default function SocialPage() {
+    const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([]);
+
+    useEffect(() => {
+        const fetchLeaderboard = async () => {
+            try {
+                const response = await fetch('/api/leaderboard?limit=5');
+                const data = await response.json();
+                setLeaderboard(data.leaderboard || []);
+            } catch (error) {
+                console.error('Failed to fetch leaderboard:', error);
+            }
+        };
+
+        fetchLeaderboard();
+    }, []);
+
     const feed = [
         {
             user: 'Sarah Chen',
-            avatar: '/api/placeholder/40/40',
+            avatar: 'girl_1',
             time: '2 hours ago',
             activity: 'Completed 30-Day Yoga Challenge',
             category: 'Exercise',
@@ -14,7 +43,7 @@ export default function SocialPage() {
         },
         {
             user: 'Mike Johnson',
-            avatar: '/api/placeholder/40/40',
+            avatar: 'boy_2',
             time: '5 hours ago',
             activity: 'Hit 50-day meditation streak! 🔥',
             category: 'Meditation',
@@ -24,7 +53,7 @@ export default function SocialPage() {
         },
         {
             user: 'Emma Williams',
-            avatar: '/api/placeholder/40/40',
+            avatar: 'girl_3',
             time: '1 day ago',
             activity: 'Started Mindful Eating Week challenge',
             category: 'Nutrition',
@@ -32,14 +61,6 @@ export default function SocialPage() {
             comments: 2,
             points: 0,
         },
-    ];
-
-    const leaderboard = [
-        { rank: 1, name: 'Alex Kumar', points: 2850, streak: 45, avatar: '/api/placeholder/40/40' },
-        { rank: 2, name: 'Lisa Park', points: 2620, streak: 38, avatar: '/api/placeholder/40/40' },
-        { rank: 3, name: 'John Smith', points: 2490, streak: 42, avatar: '/api/placeholder/40/40' },
-        { rank: 4, name: 'You', points: 1250, streak: 23, avatar: '/api/placeholder/40/40', isCurrentUser: true },
-        { rank: 5, name: 'Maria Garcia', points: 1180, streak: 19, avatar: '/api/placeholder/40/40' },
     ];
 
     return (
@@ -76,8 +97,12 @@ export default function SocialPage() {
                     {feed.map((post, idx) => (
                         <div key={idx} className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition">
                             <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-full flex items-center justify-center text-white font-bold">
-                                    {post.user.charAt(0)}
+                                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden border border-gray-200">
+                                    <img
+                                        src={getAvatarById(post.avatar)?.imageUrl || '/avatars/default.png'}
+                                        alt={post.user}
+                                        className="w-full h-full object-cover"
+                                    />
                                 </div>
 
                                 <div className="flex-1">
@@ -147,37 +172,49 @@ export default function SocialPage() {
                         </div>
 
                         <div className="space-y-3">
-                            {leaderboard.map((user) => (
-                                <div
-                                    key={user.rank}
-                                    className={`flex items-center gap-3 p-3 rounded-lg ${user.isCurrentUser ? 'bg-teal-50 border-2 border-teal-500' : 'hover:bg-slate-50'
-                                        } transition`}
-                                >
-                                    <div className={`w-8 h-8 flex items-center justify-center rounded-full font-bold text-sm ${user.rank === 1 ? 'bg-amber-400 text-white' :
+                            {leaderboard.length > 0 ? (
+                                leaderboard.map((user) => (
+                                    <div
+                                        key={user.rank}
+                                        className={`flex items-center gap-3 p-3 rounded-lg ${user.isCurrentUser ? 'bg-teal-50 border-2 border-teal-500' : 'hover:bg-slate-50'
+                                            } transition`}
+                                    >
+                                        <div className={`w-8 h-8 flex items-center justify-center rounded-full font-bold text-sm ${user.rank === 1 ? 'bg-amber-400 text-white' :
                                             user.rank === 2 ? 'bg-slate-300 text-white' :
                                                 user.rank === 3 ? 'bg-orange-400 text-white' :
                                                     'bg-slate-200 text-slate-700'
-                                        }`}>
-                                        {user.rank}
-                                    </div>
+                                            }`}>
+                                            {user.rank}
+                                        </div>
 
-                                    <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-full flex items-center justify-center text-white font-bold">
-                                        {user.name.charAt(0)}
-                                    </div>
+                                        <div className="w-10 h-10 rounded-full flex items-center justify-center bg-gray-100 overflow-hidden border border-gray-200">
+                                            {user.avatar ? (
+                                                <img
+                                                    src={getAvatarById(user.avatar)?.imageUrl || user.avatar}
+                                                    alt={user.name}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <span className="font-bold text-slate-500">{user.name.charAt(0)}</span>
+                                            )}
+                                        </div>
 
-                                    <div className="flex-1">
-                                        <p className={`font-semibold ${user.isCurrentUser ? 'text-teal-600' : 'text-slate-900'}`}>
-                                            {user.name}
-                                        </p>
-                                        <p className="text-xs text-slate-500">{user.streak} day streak</p>
-                                    </div>
+                                        <div className="flex-1">
+                                            <p className={`font-semibold ${user.isCurrentUser ? 'text-teal-600' : 'text-slate-900'}`}>
+                                                {user.name}
+                                            </p>
+                                            <p className="text-xs text-slate-500">{user.streak} day streak</p>
+                                        </div>
 
-                                    <div className="text-right">
-                                        <p className="font-bold text-slate-900">{user.points.toLocaleString()}</p>
-                                        <p className="text-xs text-slate-500">points</p>
+                                        <div className="text-right">
+                                            <p className="font-bold text-slate-900">{user.points.toLocaleString()}</p>
+                                            <p className="text-xs text-slate-500">points</p>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))
+                            ) : (
+                                <div className="text-center py-4 text-slate-500 text-sm">Loading top users...</div>
+                            )}
                         </div>
                     </div>
                 </div>

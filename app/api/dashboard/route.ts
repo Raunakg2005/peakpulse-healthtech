@@ -20,9 +20,14 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ error: 'User not found' }, { status: 404 });
         }
 
-        const recentActivities = await Activity.find({ userId: token.id })
-            .sort({ completedAt: -1 })
-            .limit(10);
+        const recentActivities = await Activity.find({
+            $or: [
+                { userId: token.id },
+                { userId: user.email }
+            ]
+        })
+            .sort({ _id: -1 })
+            .limit(50);
 
         const activeChallengesCount = await UserChallenge.countDocuments({
             userId: token.id,
@@ -38,7 +43,10 @@ export async function GET(req: NextRequest) {
         sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
         const weeklyActivitiesCount = await Activity.countDocuments({
-            userId: token.id,
+            $or: [
+                { userId: token.id },
+                { userId: user.email }
+            ],
             completedAt: { $gte: sevenDaysAgo },
         });
 
@@ -59,7 +67,7 @@ export async function GET(req: NextRequest) {
             },
             activeChallenges: activeChallengesCount,
             weeklyActivities: weeklyActivitiesCount,
-            recentActivities: recentActivities.slice(0, 5),
+            recentActivities: recentActivities,
             mlData: {
                 dropoutRisk: user.mlData?.dropoutRisk || null,
                 engagementLevel: user.mlData?.engagementLevel || null,
