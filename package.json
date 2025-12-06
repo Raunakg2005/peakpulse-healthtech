@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seed:challenges": "ts-node --compiler-options {\\\"module\\\":\\\"commonjs\\\"} scripts/seed-challenges.ts"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.11.1",

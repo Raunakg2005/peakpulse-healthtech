@@ -17,6 +17,16 @@ export interface Badge {
 export const BADGES: Badge[] = [
     // Streak Badges
     {
+        id: 'streak_1',
+        name: 'First Step',
+        description: 'Start your wellness journey with your first day',
+        icon: '✨',
+        category: 'streak',
+        rarity: 'common',
+        criteria: { type: 'streak', threshold: 1 },
+        points: 10
+    },
+    {
         id: 'streak_7',
         name: '7-Day Warrior',
         description: 'Complete activities for 7 days in a row',

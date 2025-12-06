@@ -8,6 +8,8 @@ export async function GET(req: NextRequest) {
 
         const { searchParams } = new URL(req.url);
         const limitParam = searchParams.get('limit');
+        const currentUserEmail = searchParams.get('email');
+        
         const query = User.find()
             .select('name email avatar stats.totalPoints stats.currentStreak stats.level stats.badges')
             .sort({ 'stats.totalPoints': -1 });
@@ -20,7 +22,7 @@ export async function GET(req: NextRequest) {
 
         const rankedUsers = leaderboard.map((user, index) => ({
             rank: index + 1,
-            id: user._id,
+            id: user._id.toString(),
             name: user.name,
             email: user.email,
             avatar: user.avatar,
@@ -28,6 +30,7 @@ export async function GET(req: NextRequest) {
             streak: user.stats?.currentStreak || 0,
             level: user.stats?.level || 1,
             badges: user.stats?.badges || [],
+            isCurrentUser: currentUserEmail ? user.email === currentUserEmail : false,
         }));
 
         return NextResponse.json({

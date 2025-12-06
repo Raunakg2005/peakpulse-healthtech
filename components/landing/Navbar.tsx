@@ -3,9 +3,11 @@
 import Link from 'next/link';
 import { Activity, ArrowRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 
 export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
+    const { data: session } = useSession();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -47,19 +49,31 @@ export default function Navbar() {
                     </div>
 
                     <div className="flex items-center gap-3">
-                        <Link
-                            href="/signin"
-                            className="text-slate-700 hover:text-teal-600 transition px-4 py-2 font-medium"
-                        >
-                            Sign In
-                        </Link>
-                        <Link
-                            href="/signup"
-                            className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white px-6 py-2.5 rounded-xl transition shadow-lg shadow-teal-500/30 flex items-center gap-2 font-medium group"
-                        >
-                            Get Started
-                            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
-                        </Link>
+                        {session ? (
+                            <Link
+                                href="/dashboard"
+                                className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white px-6 py-2.5 rounded-xl transition shadow-lg shadow-teal-500/30 flex items-center gap-2 font-medium group"
+                            >
+                                Go to Dashboard
+                                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
+                            </Link>
+                        ) : (
+                            <>
+                                <Link
+                                    href="/signin"
+                                    className="text-slate-700 hover:text-teal-600 transition px-4 py-2 font-medium"
+                                >
+                                    Sign In
+                                </Link>
+                                <Link
+                                    href="/signup"
+                                    className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white px-6 py-2.5 rounded-xl transition shadow-lg shadow-teal-500/30 flex items-center gap-2 font-medium group"
+                                >
+                                    Get Started
+                                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
+                                </Link>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

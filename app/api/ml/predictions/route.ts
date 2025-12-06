@@ -40,14 +40,28 @@ export async function POST(req: NextRequest) {
             goal_progress: 0.75,
         };
 
+        // Prepare ML service profile format
+        const mlProfile = {
+            user_id: user._id.toString(),
+            days_active: user.stats?.currentStreak || 1,
+            avg_steps_last_7_days: 7500,
+            meditation_streak: user.stats?.currentStreak || 0,
+            challenge_completion_rate: user.stats?.completedChallenges > 0 
+                ? user.stats.completedChallenges / (user.stats.completedChallenges + 5) 
+                : 0.5,
+            social_engagement_score: 0.6,
+            preferred_activity_times: ['morning'],
+            response_rate_to_notifications: 0.8
+        };
+
         // Call ML API for predictions (with graceful fallback)
         const predictions: Record<string, any> = {};
 
         try {
-            const dropoutRes = await fetch(`${ML_API_URL}/api/predict/dropout`, {
+            const dropoutRes = await fetch(`${ML_API_URL}/api/predict-dropout`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(userFeatures),
+                body: JSON.stringify(mlProfile),
                 signal: AbortSignal.timeout(5000),
             });
             if (dropoutRes.ok) {
@@ -59,25 +73,25 @@ export async function POST(req: NextRequest) {
         }
 
         try {
-            const engagementRes = await fetch(`${ML_API_URL}/api/predict/engagement`, {
+            const streakRes = await fetch(`${ML_API_URL}/api/predict-streak`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(userFeatures),
+                body: JSON.stringify(mlProfile),
                 signal: AbortSignal.timeout(5000),
             });
-            if (engagementRes.ok) {
-                predictions.engagement = await engagementRes.json();
+            if (streakRes.ok) {
+                predictions.streak = await streakRes.json();
             }
         } catch (e) {
-            console.log('Engagement prediction unavailable (ML service offline)');
-            predictions.engagement = null;
+            console.log('Streak prediction unavailable (ML service offline)');
+            predictions.streak = null;
         }
 
         try {
             const recommendRes = await fetch(`${ML_API_URL}/api/recommend-challenge`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(userFeatures),
+                body: JSON.stringify(mlProfile),
                 signal: AbortSignal.timeout(5000),
             });
             if (recommendRes.ok) {

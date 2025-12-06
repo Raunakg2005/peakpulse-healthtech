@@ -127,109 +127,246 @@ export default function InsightsPage() {
     };
 
     return (
-        <div className="space-y-6">
-            {/* Header */}
-            <div>
-                <h1 className="text-3xl font-bold text-slate-900">ML Insights</h1>
-                <p className="text-slate-600 mt-1">AI-powered predictions from 7 trained models</p>
-            </div>
-
-            {/* Quantum ML Badge */}
-            <div className="bg-gradient-to-br from-slate-900 to-slate-800 p-6 rounded-xl border border-slate-700">
-                <div className="flex items-center gap-3 mb-4">
-                    <div className="bg-gradient-to-br from-teal-500 to-emerald-500 p-3 rounded-xl animate-pulse">
-                        <Zap className="w-6 h-6 text-white" />
+        <div className="space-y-8">
+            {/* Enhanced Header */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 rounded-2xl p-8 shadow-2xl">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-indigo-300/20 rounded-full blur-2xl"></div>
+                <div className="relative">
+                    <div className="flex items-center gap-4 mb-3">
+                        <div className="relative">
+                            <div className="absolute inset-0 bg-white rounded-2xl blur-md opacity-30 animate-pulse"></div>
+                            <div className="relative bg-white/20 backdrop-blur-sm p-3 rounded-2xl border border-white/30">
+                                <Brain className="w-8 h-8 text-white" />
+                            </div>
+                        </div>
+                        <div>
+                            <h1 className="text-4xl font-bold text-white animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                AI Intelligence Hub
+                            </h1>
+                            <p className="text-indigo-50 text-lg animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
+                                7 trained ML models powering your personalized experience 🤖
+                            </p>
+                        </div>
                     </div>
-                    <div>
-                        <h2 className="text-xl font-bold text-white">Quantum-Enhanced Predictions</h2>
-                        <p className="text-slate-400 text-sm">Hybrid quantum-classical model with 4 qubits active</p>
+                    
+                    {/* Quick Stats */}
+                    <div className="grid grid-cols-3 gap-4 mt-6">
+                        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/20">
+                            <p className="text-indigo-100 text-xs mb-1">Active Models</p>
+                            <p className="text-white text-2xl font-bold">7</p>
+                        </div>
+                        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/20">
+                            <p className="text-indigo-100 text-xs mb-1">Avg Accuracy</p>
+                            <p className="text-white text-2xl font-bold">85.7%</p>
+                        </div>
+                        <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/20">
+                            <p className="text-indigo-100 text-xs mb-1">Predictions</p>
+                            <p className="text-white text-2xl font-bold">Real-time</p>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <div className="grid md:grid-cols-3 gap-4">
-                    <div className="bg-teal-500/20 backdrop-blur-sm rounded-lg p-4 border border-teal-400/30">
-                        <p className="text-teal-100 text-sm mb-1">Quantum Circuit</p>
-                        <p className="text-white text-xl font-bold">4 Qubits</p>
-                        <p className="text-teal-200 text-xs mt-1">3 variational layers</p>
+            {/* Enhanced Quantum ML Badge */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8 rounded-2xl border-2 border-slate-700 shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-700">
+                {/* Animated Background */}
+                <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-teal-500/10 to-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-full blur-2xl animate-pulse delay-500"></div>
+                
+                <div className="relative">
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className="relative">
+                            <div className="absolute inset-0 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-xl blur-lg opacity-50 animate-pulse"></div>
+                            <div className="relative bg-gradient-to-br from-teal-500 to-emerald-500 p-4 rounded-xl shadow-lg">
+                                <Zap className="w-7 h-7 text-white animate-pulse" />
+                            </div>
+                        </div>
+                        <div>
+                            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                                Quantum-Enhanced AI
+                                <span className="text-xs bg-gradient-to-r from-teal-500 to-emerald-500 px-3 py-1 rounded-full animate-pulse">ACTIVE</span>
+                            </h2>
+                            <p className="text-slate-400 text-sm">Hybrid quantum-classical architecture for superior accuracy</p>
+                        </div>
                     </div>
-                    <div className="bg-emerald-500/20 backdrop-blur-sm rounded-lg p-4 border border-emerald-400/30">
-                        <p className="text-emerald-100 text-sm mb-1">Parameters</p>
-                        <p className="text-white text-xl font-bold">36 Trainable</p>
-                        <p className="text-emerald-200 text-xs mt-1">Optimized</p>
+
+                    <div className="grid md:grid-cols-3 gap-4">
+                        <div className="group bg-gradient-to-br from-teal-500/10 to-emerald-500/10 backdrop-blur-sm rounded-xl p-5 border-2 border-teal-400/30 hover:border-teal-400/60 transition-all duration-300 hover:scale-105 hover:-translate-y-1 animate-in fade-in slide-in-from-left duration-500">
+                            <div className="flex items-center justify-between mb-2">
+                                <p className="text-teal-100 text-sm font-semibold">⚛️ Quantum Circuit</p>
+                                <div className="w-2 h-2 bg-teal-400 rounded-full animate-ping"></div>
+                            </div>
+                            <p className="text-white text-3xl font-bold mb-1 group-hover:scale-110 transition-transform">4 Qubits</p>
+                            <p className="text-teal-200 text-xs">3 variational layers active</p>
+                            <div className="mt-3 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                                <div className="h-full bg-gradient-to-r from-teal-400 to-emerald-400 rounded-full animate-pulse" style={{ width: '75%' }}></div>
+                            </div>
+                        </div>
+                        
+                        <div className="group bg-gradient-to-br from-emerald-500/10 to-teal-500/10 backdrop-blur-sm rounded-xl p-5 border-2 border-emerald-400/30 hover:border-emerald-400/60 transition-all duration-300 hover:scale-105 hover:-translate-y-1 animate-in fade-in slide-in-from-bottom duration-500 delay-100">
+                            <div className="flex items-center justify-between mb-2">
+                                <p className="text-emerald-100 text-sm font-semibold">🔧 Parameters</p>
+                                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-ping"></div>
+                            </div>
+                            <p className="text-white text-3xl font-bold mb-1 group-hover:scale-110 transition-transform">36</p>
+                            <p className="text-emerald-200 text-xs">Trainable • Optimized</p>
+                            <div className="mt-3 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                                <div className="h-full bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full" style={{ width: '100%' }}></div>
+                            </div>
+                        </div>
+                        
+                        <div className="group bg-gradient-to-br from-amber-500/10 to-orange-500/10 backdrop-blur-sm rounded-xl p-5 border-2 border-amber-400/30 hover:border-amber-400/60 transition-all duration-300 hover:scale-105 hover:-translate-y-1 animate-in fade-in slide-in-from-right duration-500 delay-200">
+                            <div className="flex items-center justify-between mb-2">
+                                <p className="text-amber-100 text-sm font-semibold">⚡ Performance</p>
+                                <div className="w-2 h-2 bg-amber-400 rounded-full animate-ping"></div>
+                            </div>
+                            <p className="text-white text-3xl font-bold mb-1 group-hover:scale-110 transition-transform">Hybrid</p>
+                            <p className="text-amber-200 text-xs">70% Classical • 30% Quantum</p>
+                            <div className="mt-3 flex gap-1">
+                                <div className="h-1.5 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full" style={{ width: '70%' }}></div>
+                                <div className="h-1.5 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full animate-pulse" style={{ width: '30%' }}></div>
+                            </div>
+                        </div>
                     </div>
-                    <div className="bg-amber-500/20 backdrop-blur-sm rounded-lg p-4 border border-amber-400/30">
-                        <p className="text-amber-100 text-sm mb-1">Performance</p>
-                        <p className="text-white text-xl font-bold">Hybrid Model</p>
-                        <p className="text-amber-200 text-xs mt-1">70% classical + 30% quantum</p>
-                    </div>
+
+                    {/* Floating particles */}
+                    <div className="absolute top-20 left-20 w-2 h-2 bg-teal-400 rounded-full animate-bounce opacity-30"></div>
+                    <div className="absolute top-32 right-32 w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce delay-300 opacity-30"></div>
+                    <div className="absolute bottom-20 left-1/3 w-1 h-1 bg-purple-400 rounded-full animate-bounce delay-700 opacity-30"></div>
                 </div>
             </div>
 
-            {/* ML Models Grid */}
+            {/* Enhanced ML Models Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {mlModels.map((model) => {
+                {mlModels.map((model, idx) => {
                     const Icon = model.icon;
 
                     return (
                         <div
                             key={model.name}
-                            className="bg-white p-6 rounded-xl border-2 border-slate-200 hover:border-teal-500 transition shadow-sm hover:shadow-lg"
+                            className="group relative bg-gradient-to-br from-slate-800 to-slate-900 p-6 rounded-2xl border-2 border-slate-700 hover:border-slate-600 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:-translate-y-2 animate-in fade-in slide-in-from-bottom-4"
+                            style={{ animationDelay: `${idx * 100}ms` }}
                         >
-                            <div className="flex items-start justify-between mb-4">
-                                <div className={`bg-gradient-to-br ${colorClasses[model.color as keyof typeof colorClasses]} p-3 rounded-xl`}>
-                                    <Icon className="w-6 h-6 text-white" />
+                            {/* Glow effect on hover */}
+                            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-500 -z-10"></div>
+                            
+                            <div className="flex items-start justify-between mb-5">
+                                <div className="relative">
+                                    <div className={`absolute inset-0 bg-gradient-to-br ${colorClasses[model.color as keyof typeof colorClasses]} rounded-xl blur-md opacity-0 group-hover:opacity-50 transition-opacity duration-300`}></div>
+                                    <div className={`relative bg-gradient-to-br ${colorClasses[model.color as keyof typeof colorClasses]} p-4 rounded-xl shadow-lg transform group-hover:rotate-6 transition-transform duration-300`}>
+                                        <Icon className="w-7 h-7 text-white" />
+                                    </div>
                                 </div>
-                                <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">
-                                    {model.accuracy}
-                                </span>
-                            </div>
-
-                            <h3 className="text-lg font-bold text-slate-900 mb-2">{model.name}</h3>
-                            <p className="text-sm text-slate-600 mb-4">{model.description}</p>
-
-                            <div className="space-y-2 mb-4">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm text-slate-600">Prediction:</span>
-                                    <span className="font-bold text-teal-600">{model.prediction}</span>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm text-slate-600">Status:</span>
-                                    <span className="font-semibold text-slate-900">{model.status}</span>
+                                <div className="relative">
+                                    <div className="absolute inset-0 bg-emerald-400 blur-lg opacity-0 group-hover:opacity-30 animate-pulse"></div>
+                                    <span className="relative px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-sm font-bold rounded-full shadow-lg">
+                                        {model.accuracy}
+                                    </span>
                                 </div>
                             </div>
 
-                            <div className="pt-4 border-t border-slate-200 space-y-2">
+                            <h3 className="text-white font-bold text-xl mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-pink-400 transition-all duration-300">
+                                {model.name}
+                            </h3>
+                            
+                            <p className="text-slate-400 text-sm mb-4 leading-relaxed">
+                                {model.description}
+                            </p>
+                            
+                            {/* Accuracy progress bar */}
+                            <div className="mb-4">
+                                <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                    <div 
+                                        className="h-full bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 rounded-full transition-all duration-1000 ease-out group-hover:animate-pulse"
+                                        style={{ 
+                                            width: model.accuracy,
+                                            animationDelay: `${idx * 100}ms`
+                                        }}
+                                    ></div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-3 mb-4 pt-3 border-t border-slate-700">
+                                <div className="flex items-center justify-between group/pred hover:translate-x-1 transition-transform">
+                                    <span className="text-sm text-slate-400 flex items-center gap-1.5">
+                                        <span className="w-1.5 h-1.5 bg-teal-400 rounded-full group-hover/pred:animate-ping"></span>
+                                        Prediction:
+                                    </span>
+                                    <span className="font-bold bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent px-2 py-0.5">
+                                        {model.prediction}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between group/status hover:translate-x-1 transition-transform">
+                                    <span className="text-sm text-slate-400 flex items-center gap-1.5">
+                                        <span className="w-1.5 h-1.5 bg-purple-400 rounded-full group-hover/status:animate-ping"></span>
+                                        Status:
+                                    </span>
+                                    <span className="font-semibold text-white px-2 py-0.5 bg-slate-700/50 rounded group-hover/status:bg-purple-500/20 transition-colors">
+                                        {model.status}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="pt-4 border-t border-slate-700 space-y-2">
                                 {model.metrics.map((metric, idx) => (
-                                    <div key={idx} className="flex items-center justify-between text-sm">
-                                        <span className="text-slate-500">{metric.label}:</span>
-                                        <span className="font-medium text-slate-700">{metric.value}</span>
+                                    <div key={idx} className="flex items-center justify-between text-sm group/metric hover:translate-x-1 transition-transform">
+                                        <span className="text-slate-400 flex items-center gap-1.5">
+                                            <span className="w-1.5 h-1.5 bg-pink-400 rounded-full group-hover/metric:animate-ping"></span>
+                                            {metric.label}:
+                                        </span>
+                                        <span className="font-medium text-white px-2 py-0.5 bg-slate-700/50 rounded group-hover/metric:bg-pink-500/20 transition-colors">
+                                            {metric.value}
+                                        </span>
                                     </div>
                                 ))}
                             </div>
+                            
+                            {/* Corner accent */}
+                            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-purple-500/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         </div>
                     );
                 })}
             </div>
 
-            {/* Real-time Predictions Status */}
-            <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-                <div className="flex items-start gap-4">
-                    <div className="bg-blue-100 p-3 rounded-lg">
-                        <Brain className="w-6 h-6 text-blue-600" />
+            {/* Enhanced Real-time Predictions Status */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 rounded-2xl p-8 shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-700">
+                {/* Animated Background */}
+                <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-pulse"></div>
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full blur-2xl animate-pulse delay-500"></div>
+                
+                <div className="relative flex items-start gap-6">
+                    <div className="relative">
+                        <div className="absolute inset-0 bg-white/30 rounded-2xl blur-lg animate-pulse"></div>
+                        <div className="relative bg-white/20 backdrop-blur-sm p-4 rounded-2xl border border-white/30 shadow-xl">
+                            <Brain className="w-8 h-8 text-white" />
+                        </div>
                     </div>
-                    <div>
-                        <h3 className="font-bold text-slate-900 mb-1">ML Service Status</h3>
-                        <p className="text-slate-600 text-sm mb-3">
+                    <div className="flex-1">
+                        <div className="flex items-center justify-between mb-3">
+                            <h3 className="font-bold text-white text-2xl">ML Service Status</h3>
+                            <span className="px-4 py-1.5 bg-green-500 text-white text-xs font-bold rounded-full flex items-center gap-2 shadow-lg animate-pulse">
+                                <span className="w-2 h-2 bg-white rounded-full"></span>
+                                ONLINE
+                            </span>
+                        </div>
+                        <p className="text-white/90 text-sm mb-6 leading-relaxed">
                             All 7 models trained and ready. Predictions update in real-time based on your activity.
                         </p>
-                        <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                                <span className="text-sm text-slate-600">Models Active</span>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 hover:bg-white/15 transition-colors">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
+                                    <span className="text-sm font-semibold text-white">Models Active</span>
+                                </div>
+                                <p className="text-white/70 text-xs">All 7 models processing predictions</p>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                                <span className="text-sm text-slate-600">Quantum Circuit Ready</span>
+                            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 hover:bg-white/15 transition-colors">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <div className="w-3 h-3 bg-teal-400 rounded-full animate-pulse shadow-lg shadow-teal-400/50"></div>
+                                    <span className="text-sm font-semibold text-white">Quantum Circuit Ready</span>
+                                </div>
+                                <p className="text-white/70 text-xs">4-qubit hybrid architecture online</p>
                             </div>
                         </div>
                     </div>

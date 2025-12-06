@@ -79,11 +79,11 @@ export async function fetchUserChallenges(status?: string) {
     return res.json();
 }
 
-export async function fetchMLPredictions() {
+export async function fetchMLPredictions(userId: string) {
     const res = await fetch(`${API_BASE}/api/ml/predictions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({}),
+        body: JSON.stringify({ userId }),
     });
     if (!res.ok) throw new Error('Failed to fetch ML predictions');
     return res.json();

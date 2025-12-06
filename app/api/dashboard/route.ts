@@ -20,14 +20,36 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ error: 'User not found' }, { status: 404 });
         }
 
+        // First check all activities in the database for debugging
+        const allActivities = await Activity.find({}).limit(10);
+        console.log('All activities sample:', allActivities.map(a => ({ 
+            id: a._id, 
+            userId: a.userId, 
+            userIdType: typeof a.userId,
+            name: a.name 
+        })));
+        console.log('Looking for userId:', {
+            tokenId: token.id,
+            tokenIdType: typeof token.id,
+            userObjectId: user._id,
+            userObjectIdString: user._id.toString(),
+            email: user.email
+        });
+
+        // Query activities with multiple potential userId formats
         const recentActivities = await Activity.find({
             $or: [
                 { userId: token.id },
+                { userId: token.id.toString() },
+                { userId: user._id },
+                { userId: user._id.toString() },
                 { userId: user.email }
             ]
         })
-            .sort({ _id: -1 })
+            .sort({ completedAt: -1, timestamp: -1, _id: -1 })
             .limit(50);
+
+        console.log('Found activities for user:', recentActivities.length);
 
         const activeChallengesCount = await UserChallenge.countDocuments({
             userId: token.id,
