@@ -3,16 +3,14 @@ uvicorn[standard]
 pydantic
 python-multipart
 
-# ML Core (lightweight)
+# ML Core
 scikit-learn
 pandas
 numpy
 scipy
-
-# Data Processing
 joblib
 
-# Quantum ML
+# Quantum ML (required for advanced predictions)
 pennylane
 pennylane-qiskit
 qiskit
