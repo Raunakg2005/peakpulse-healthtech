@@ -237,6 +237,7 @@ async def predict_dropout_quantum(profile: UserProfile):
         
         # Add user_id and risk classification
         prediction['user_id'] = profile.user_id
+        prediction['model_type'] = 'Hybrid Quantum-Classical'
         
         if prediction['dropout_probability'] > 0.7:
             prediction['risk_level'] = 'high'
@@ -244,6 +245,10 @@ async def predict_dropout_quantum(profile: UserProfile):
             prediction['risk_level'] = 'medium'
         else:
             prediction['risk_level'] = 'low'
+        
+        # Add quantum info
+        quantum_info = quantum_dropout_predictor.get_quantum_info()
+        prediction['quantum_info'] = quantum_info
         
         return prediction
         
@@ -288,15 +293,16 @@ async def predict_compare(profile: UserProfile):
         return {
             "user_id": profile.user_id,
             "classical": {
-                "probability": classical['dropout_probability'],
-                "risk_level": classical['risk_level'],
+                "dropout_probability": classical.get('dropout_probability'),
+                "risk_level": classical.get('risk_level'),
                 "model": "VotingClassifier (Ensemble)",
                 "accuracy": "93.7%"
             },
             "quantum": {
-                "probability": quantum['dropout_probability'] if quantum else None,
+                "dropout_probability": quantum['dropout_probability'] if quantum else None,
                 "quantum_component": quantum['quantum_component'] if quantum else None,
                 "classical_component": quantum['classical_component'] if quantum else None,
+                "risk_level": "high" if quantum and quantum['dropout_probability'] > 0.7 else "medium" if quantum and quantum['dropout_probability'] > 0.4 else "low",
                 "model": "Hybrid Quantum-Classical",
                 "qubits": 4,
                 "available": quantum is not None

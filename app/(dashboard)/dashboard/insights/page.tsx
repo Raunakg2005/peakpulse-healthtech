@@ -2,8 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { Brain, TrendingUp, Zap, Target, MessageSquare, Activity, BarChart } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import VitalsMonitor from '@/components/VitalsMonitor';
+import QuantumComparison from '@/components/ml/QuantumComparison';
 
 export default function InsightsPage() {
+    const { data: session } = useSession();
     const [loading, setLoading] = useState(false);
     const [predictions, setPredictions] = useState({
         dropout: { risk: 6.3, confidence: 93.7, level: 'Low Risk' },
@@ -237,6 +241,13 @@ export default function InsightsPage() {
                 </div>
             </div>
 
+            {/* Quantum AI Predictions */}
+            {session?.user && (session?.user as any)?.id && (
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
+                    <QuantumComparison userId={(session.user as any).id} />
+                </div>
+            )}
+
             {/* Enhanced ML Models Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {mlModels.map((model, idx) => {
@@ -327,6 +338,11 @@ export default function InsightsPage() {
                         </div>
                     );
                 })}
+            </div>
+
+            {/* Vital Signs Monitor */}
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <VitalsMonitor />
             </div>
 
             {/* Enhanced Real-time Predictions Status */}

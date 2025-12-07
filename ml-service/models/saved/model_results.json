@@ -1,20 +1,20 @@
 {
   "dropout": {
     "model_name": "Logistic Regression",
-    "accuracy": 0.985,
-    "precision": 0.98,
-    "recall": 0.9607843137254902,
-    "f1_score": 0.9702970297029703,
-    "roc_auc": 0.961442295038821
+    "accuracy": 0.66,
+    "precision": 0.3950617283950617,
+    "recall": 0.6274509803921569,
+    "f1_score": 0.48484848484848486,
+    "roc_auc": 0.6710093433346492
   },
   "streak": {
-    "accuracy": 0.955,
-    "precision": 0.9326923076923077,
-    "recall": 0.9797979797979798,
-    "f1_score": 0.9556650246305419,
-    "roc_auc": 0.9821982198219822
+    "accuracy": 0.665,
+    "precision": 0.6565656565656566,
+    "recall": 0.6632653061224489,
+    "f1_score": 0.6598984771573604,
+    "roc_auc": 0.7217887154861946
   },
   "engagement": {
-    "accuracy": 0.97
+    "accuracy": 0.315
   }
 }

@@ -16,6 +16,13 @@ export interface IActivity {
     notes?: string;
     completedAt: Date;
     createdAt: Date;
+    // Vital Health Metrics
+    heartRate?: number; // beats per minute (BPM)
+    restingHeartRate?: number; // BPM at rest
+    bloodOxygen?: number; // SpO2 percentage (95-100%)
+    bloodPressureSystolic?: number; // mmHg (top number)
+    bloodPressureDiastolic?: number; // mmHg (bottom number)
+    heartRateVariability?: number; // HRV in milliseconds
 }
 
 const ActivitySchema = new Schema<IActivity>({
@@ -67,6 +74,37 @@ const ActivitySchema = new Schema<IActivity>({
         type: Date,
         required: true,
         default: Date.now,
+    },
+    // Vital Health Metrics
+    heartRate: {
+        type: Number,
+        min: 30,
+        max: 220,
+    },
+    restingHeartRate: {
+        type: Number,
+        min: 40,
+        max: 100,
+    },
+    bloodOxygen: {
+        type: Number,
+        min: 70,
+        max: 100,
+    },
+    bloodPressureSystolic: {
+        type: Number,
+        min: 70,
+        max: 200,
+    },
+    bloodPressureDiastolic: {
+        type: Number,
+        min: 40,
+        max: 130,
+    },
+    heartRateVariability: {
+        type: Number,
+        min: 10,
+        max: 200,
     },
 }, {
     timestamps: true,

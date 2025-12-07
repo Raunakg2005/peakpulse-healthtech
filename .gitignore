@@ -67,12 +67,15 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# ML Models & Data
-ml-service/models/saved/*.pkl
-ml-service/models/saved/*.h5
-ml-service/models/saved/*.joblib
+# ML Models & Data (commented out for hackathon - team needs models)
+# ml-service/models/saved/*.pkl
+# ml-service/models/saved/*.h5
+# ml-service/models/saved/*.joblib
 ml-service/data/processed/
+ml-service/data/*.csv
 ml-service/data/*.csv.backup
+ml-service/ml-service/data/*.csv
+ml-service/ml-service/data/*.json
 
 # IDE
 .vscode/
@@ -96,8 +99,23 @@ dump/
 .ipynb_checkpoints/
 *.ipynb
 
-# Keep important files
-!ml-service/data/users.csv
-!ml-service/data/activities.csv
-!ml-service/data/challenges.csv
-!ml-service/data/social.csv
+# Exclude test files
+ml-service/test_*.py
+ml-service/check_*.py
+ml-service/validate_*.py
+ml-service/verify_*.py
+ml-service/final_*.py
+
+# Exclude status/report docs
+*STATUS*.md
+*REPORT*.md
+*VALIDATION*.md
+*INTEGRATION_STATUS*.md
+ml-service/QUANTUM_STATUS_REPORT.md
+ml-service/COMPLETE_INTEGRATION_STATUS.md
+ml-service/FINAL_VALIDATION_REPORT.md
+
+# Exclude demo/visualization files
+ml-service/demo_*.py
+ml-service/demo_*.txt
+ml-service/create_demo_*.py

@@ -1,7 +1,3 @@
-activity_slope
-three_day_decline
-consistency_score
-momentum
 days_active
 total_days
 avg_steps_last_7_days
@@ -13,3 +9,13 @@ social_engagement_score
 social_interactions_count
 response_rate_to_notifications
 mood_correlation_with_exercise
+avg_heart_rate_7d
+avg_resting_heart_rate_7d
+avg_blood_oxygen_7d
+avg_bp_systolic_7d
+avg_bp_diastolic_7d
+avg_hrv_7d
+activity_ratio
+engagement_score
+vitals_health_score
+social_activity_interaction

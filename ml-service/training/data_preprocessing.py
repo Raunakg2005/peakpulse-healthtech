@@ -90,7 +90,16 @@ class DataCleaner:
                 self.features[col].fillna(self.features[col].median(), inplace=True)
         
         # Detect and handle outliers
-        outlier_columns = ['avg_steps_last_7_days', 'avg_meditation_minutes']
+        outlier_columns = [
+            'avg_steps_last_7_days', 
+            'avg_meditation_minutes',
+            'avg_heart_rate_7d',
+            'avg_resting_heart_rate_7d',
+            'avg_blood_oxygen_7d',
+            'avg_bp_systolic_7d',
+            'avg_bp_diastolic_7d',
+            'avg_hrv_7d'
+        ]
         for col in outlier_columns:
             if col in self.features.columns:
                 outliers = self.detect_outliers(self.features, col)
@@ -122,6 +131,18 @@ class DataCleaner:
             self.features['challenge_completion_rate'] > 0.7
         ).astype(int)
         
+        # CRITICAL: Remove user_type to prevent data leakage!
+        if 'user_type' in self.features.columns:
+            self.features = self.features.drop('user_type', axis=1)
+            logger.info("✓ Removed 'user_type' to prevent data leakage")
+        
+        # Also remove any categorical columns that shouldn't be used
+        categorical_cols_to_remove = ['fitness_level', 'primary_goal']
+        for col in categorical_cols_to_remove:
+            if col in self.features.columns:
+                self.features = self.features.drop(col, axis=1)
+                logger.info(f"✓ Removed '{col}' (categorical, not properly encoded)")
+        
         logger.info("✓ Created 3 label types for different ML tasks")
         return self.features
     
@@ -129,26 +150,27 @@ class DataCleaner:
         """Create train/validation/test splits with stratification."""
         logger.info("\n✂️ Splitting data into train/val/test sets...")
         
-        # Select feature columns - UPDATED for temporal features
-        feature_cols = [
-            # TEMPORAL FEATURES (should be strongest predictors)
-            'activity_slope',
-            'three_day_decline',
-            'consistency_score',
-            'momentum',
-            # STANDARD FEATURES
-            'days_active',
-            'total_days',
-            'avg_steps_last_7_days',
-            'avg_meditation_minutes',
-            'avg_sleep_hours',
-            'challenge_completion_rate',
-            'total_points_earned',
-            'social_engagement_score',
-            'social_interactions_count',
-            'response_rate_to_notifications',
-            'mood_correlation_with_exercise'
+        # Select feature columns - Use only columns that exist in the dataset
+        available_cols = self.features.columns.tolist()
+        
+        # Build feature list from available columns
+        preferred_features = [
+            'activity_slope', 'three_day_decline', 'consistency_score', 'momentum',
+            'days_active', 'total_days', 'avg_steps_last_7_days', 'avg_meditation_minutes',
+            'avg_sleep_hours', 'challenge_completion_rate', 'total_points_earned',
+            'social_engagement_score', 'social_interactions_count',
+            'response_rate_to_notifications', 'mood_correlation_with_exercise',
+            # Vital signs features
+            'avg_heart_rate_7d', 'avg_resting_heart_rate_7d', 'avg_blood_oxygen_7d',
+            'avg_bp_systolic_7d', 'avg_bp_diastolic_7d', 'avg_hrv_7d'
         ]
+        
+        # Use only features that exist in the dataset
+        feature_cols = [col for col in preferred_features if col in available_cols]
+        
+        logger.info(f"  Using {len(feature_cols)} features:")
+        for col in feature_cols:
+            logger.info(f"    - {col}")
         
         X = self.features[feature_cols].copy()
         y_engagement = self.features['engagement_label'].copy()

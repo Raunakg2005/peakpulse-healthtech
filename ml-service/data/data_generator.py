@@ -119,12 +119,26 @@ class HealthDataGenerator:
                     meditation_minutes = random.randint(5, 30) if random.random() < meditation_prob else 0
                     water_glasses = random.randint(6, 10)
                     sleep_hours = round(random.uniform(6, 9), 1)
+                    # Healthy vital signs
+                    heart_rate = random.randint(60, 100)  # Normal resting HR
+                    resting_heart_rate = random.randint(50, 70)  # Good resting HR
+                    blood_oxygen = random.randint(96, 100)  # Healthy SpO2
+                    bp_systolic = random.randint(110, 130)  # Normal BP
+                    bp_diastolic = random.randint(70, 85)  # Normal BP
+                    hrv = random.randint(50, 100)  # Good HRV
                 else:
                     current_streak = 0
                     steps = random.randint(500, 3000)
                     meditation_minutes = 0
                     water_glasses = random.randint(0, 5)
                     sleep_hours = round(random.uniform(4, 7), 1)
+                    # Less optimal vital signs for inactive users
+                    heart_rate = random.randint(70, 110)  # Higher resting HR
+                    resting_heart_rate = random.randint(65, 85)  # Higher resting HR
+                    blood_oxygen = random.randint(92, 98)  # Lower SpO2
+                    bp_systolic = random.randint(120, 145)  # Elevated BP
+                    bp_diastolic = random.randint(80, 95)  # Elevated BP
+                    hrv = random.randint(20, 60)  # Lower HRV
                 
                 activities.append({
                     "user_id": user_id,
@@ -136,7 +150,14 @@ class HealthDataGenerator:
                     "meals_logged": random.randint(0, 3),
                     "exercise_minutes": random.randint(0, 60) if completed else 0,
                     "current_streak": current_streak,
-                    "completed_daily_goal": completed
+                    "completed_daily_goal": completed,
+                    # Vital Health Metrics
+                    "heart_rate": heart_rate,
+                    "resting_heart_rate": resting_heart_rate,
+                    "blood_oxygen": blood_oxygen,
+                    "blood_pressure_systolic": bp_systolic,
+                    "blood_pressure_diastolic": bp_diastolic,
+                    "heart_rate_variability": hrv
                 })
         
         return pd.DataFrame(activities)
@@ -259,6 +280,14 @@ class HealthDataGenerator:
                 avg_meditation = user_activities["meditation_minutes"].mean()
                 avg_sleep = user_activities["sleep_hours"].mean()
                 
+                # Vital Health Metrics (last 7 days average)
+                avg_heart_rate = user_activities.tail(7)["heart_rate"].mean()
+                avg_resting_hr = user_activities.tail(7)["resting_heart_rate"].mean()
+                avg_blood_oxygen = user_activities.tail(7)["blood_oxygen"].mean()
+                avg_bp_systolic = user_activities.tail(7)["blood_pressure_systolic"].mean()
+                avg_bp_diastolic = user_activities.tail(7)["blood_pressure_diastolic"].mean()
+                avg_hrv = user_activities.tail(7)["heart_rate_variability"].mean()
+                
                 # Challenge features
                 challenge_completion_rate = (
                     len(user_challenges[user_challenges["completed"]]) / max(len(user_challenges), 1)
@@ -289,6 +318,13 @@ class HealthDataGenerator:
                     "preferred_activity_time": user["preferred_activity_time"],
                     "response_rate_to_notifications": round(notification_response_rate, 3),
                     "mood_correlation_with_exercise": round(mood_exercise_correlation, 3),
+                    # Vital Health Metrics
+                    "avg_heart_rate_7d": round(avg_heart_rate, 1),
+                    "avg_resting_heart_rate_7d": round(avg_resting_hr, 1),
+                    "avg_blood_oxygen_7d": round(avg_blood_oxygen, 1),
+                    "avg_bp_systolic_7d": round(avg_bp_systolic, 1),
+                    "avg_bp_diastolic_7d": round(avg_bp_diastolic, 1),
+                    "avg_hrv_7d": round(avg_hrv, 1),
                     "user_type": user["user_type"],
                     "fitness_level": user["fitness_level"],
                     "primary_goal": user["primary_goal"]
