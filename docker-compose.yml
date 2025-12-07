@@ -41,25 +41,21 @@ services:
       - healthtech-network
     restart: unless-stopped
 
+  # MongoDB Database
+  mongodb:
+    image: mongo:latest
+    container_name: healthtech-db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - healthtech-network
+    restart: unless-stopped
+
 networks:
   healthtech-network:
     driver: bridge
 
-# Optional: Add MongoDB if you need persistent storage
-# Uncomment below to add database
-#  mongodb:
-#    image: mongo:latest
-#    container_name: healthtech-db
-#    ports:
-#      - "27017:27017"
-#    volumes:
-#      - mongodb_data:/data/db
-#    environment:
-#      - MONGO_INITDB_ROOT_USERNAME=admin
-#      - MONGO_INITDB_ROOT_PASSWORD=password123
-#    networks:
-#      - healthtech-network
-#    restart: unless-stopped
-
-#volumes:
-#  mongodb_data:
+volumes:
+  mongodb_data:
