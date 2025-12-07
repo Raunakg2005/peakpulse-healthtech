@@ -33,11 +33,21 @@ app.add_middleware(
 )
 
 # Initialize ML models
-challenge_recommender = ChallengeRecommender()
-dropout_predictor = DropoutPredictor()
-streak_predictor = StreakPredictor()
-motivation_generator = MotivationGenerator()
-difficulty_calibrator = DifficultyCalibrator()
+try:
+    challenge_recommender = ChallengeRecommender()
+    dropout_predictor = DropoutPredictor()
+    streak_predictor = StreakPredictor()
+    motivation_generator = MotivationGenerator()
+    difficulty_calibrator = DifficultyCalibrator()
+    logger.info("✅ ML models initialized successfully")
+except Exception as e:
+    logger.error(f"Failed to initialize ML models: {e}")
+    # Initialize with None to allow app to start
+    challenge_recommender = None
+    dropout_predictor = None
+    streak_predictor = None
+    motivation_generator = None
+    difficulty_calibrator = None
 
 # Initialize Quantum ML models
 try:
