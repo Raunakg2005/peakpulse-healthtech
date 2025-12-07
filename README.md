@@ -163,7 +163,34 @@ npm run dev
 ## 🎬 Demo
 
 ### Screenshots
-[To be added]
+
+#### 👥 Friends & Social Connection
+![Friends Page](public/screenshots/friends.jpg)
+*Connect with friends and track your progress together with real-time activity updates*
+
+#### 🧠 AI Intelligence Hub
+![AI Insights Dashboard](public/screenshots/insights.jpg)
+*Quantum-enhanced ML predictions with 93.5% accuracy - Dropout prediction, engagement analysis, and personalized recommendations*
+
+#### 💬 Community Hub
+![Social Feed](public/screenshots/social.jpg)
+*Share achievements, celebrate wins, and stay motivated with the global community*
+
+#### 🏆 Challenges
+![Challenges Page](public/screenshots/challenges.jpg)
+*AI-recommended challenges tailored to your fitness level and goals*
+
+#### 📅 Activity Calendar
+![Calendar View](public/screenshots/calendar.jpg)
+*Track your wellness journey day by day with comprehensive activity logging*
+
+#### 🏆 Hall of Champions - Leaderboard
+![Leaderboard](public/screenshots/leaderboard.jpg)
+*Compete with the community and rise to greatness with real-time rankings and podium standings*
+
+#### 🎖️ Achievements & Badges
+![Achievements Page](public/screenshots/achievements.jpg)
+*Unlock 25+ unique badges across 5 categories - Track your progress and celebrate milestones*
 
 ### Video Demo
 [Link to be added]
