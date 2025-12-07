@@ -47,6 +47,15 @@ export interface IUser {
         lastPrediction?: Date;
     };
 
+    googleFit?: {
+        accessToken?: string;
+        refreshToken?: string;
+        tokenExpiry?: Date;
+        isConnected: boolean;
+        lastSync?: Date;
+        scopes?: string[];
+    };
+
     createdAt: Date;
     updatedAt: Date;
 }
@@ -162,6 +171,24 @@ const UserSchema = new Schema<IUser>({
         engagementLevel: String,
         preferredTone: String,
         lastPrediction: Date,
+    },
+
+    googleFit: {
+        accessToken: {
+            type: String,
+            select: false, // Don't return in queries by default for security
+        },
+        refreshToken: {
+            type: String,
+            select: false, // Don't return in queries by default for security
+        },
+        tokenExpiry: Date,
+        isConnected: {
+            type: Boolean,
+            default: false,
+        },
+        lastSync: Date,
+        scopes: [String],
     },
 
     onboardingCompleted: {

@@ -5,6 +5,7 @@ import { Brain, TrendingUp, Zap, Target, MessageSquare, Activity, BarChart } fro
 import { useSession } from 'next-auth/react';
 import VitalsMonitor from '@/components/VitalsMonitor';
 import QuantumComparison from '@/components/ml/QuantumComparison';
+import GoogleFitIntegration from '@/components/GoogleFitIntegration';
 
 export default function InsightsPage() {
     const { data: session } = useSession();
@@ -14,6 +15,18 @@ export default function InsightsPage() {
         streak: { prediction: 25, confidence: 83.5, trend: '+12%' },
         engagement: { level: 'Excellent', confidence: 72, score: 8.5 },
     });
+
+    // Check for Google Fit connection status in URL
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const connected = params.get('connected');
+        const error = params.get('error');
+
+        // Clean URL without showing popups
+        if (connected || error) {
+            window.history.replaceState({}, '', '/dashboard/insights');
+        }
+    }, []);
 
     // Sample user features for ML
     const userFeatures = {
@@ -153,7 +166,7 @@ export default function InsightsPage() {
                             </p>
                         </div>
                     </div>
-                    
+
                     {/* Quick Stats */}
                     <div className="grid grid-cols-3 gap-4 mt-6">
                         <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 border border-white/20">
@@ -177,7 +190,7 @@ export default function InsightsPage() {
                 {/* Animated Background */}
                 <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-teal-500/10 to-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
                 <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-full blur-2xl animate-pulse delay-500"></div>
-                
+
                 <div className="relative">
                     <div className="flex items-center gap-4 mb-6">
                         <div className="relative">
@@ -207,7 +220,7 @@ export default function InsightsPage() {
                                 <div className="h-full bg-gradient-to-r from-teal-400 to-emerald-400 rounded-full animate-pulse" style={{ width: '75%' }}></div>
                             </div>
                         </div>
-                        
+
                         <div className="group bg-gradient-to-br from-emerald-500/10 to-teal-500/10 backdrop-blur-sm rounded-xl p-5 border-2 border-emerald-400/30 hover:border-emerald-400/60 transition-all duration-300 hover:scale-105 hover:-translate-y-1 animate-in fade-in slide-in-from-bottom duration-500 delay-100">
                             <div className="flex items-center justify-between mb-2">
                                 <p className="text-emerald-100 text-sm font-semibold">🔧 Parameters</p>
@@ -219,7 +232,7 @@ export default function InsightsPage() {
                                 <div className="h-full bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full" style={{ width: '100%' }}></div>
                             </div>
                         </div>
-                        
+
                         <div className="group bg-gradient-to-br from-amber-500/10 to-orange-500/10 backdrop-blur-sm rounded-xl p-5 border-2 border-amber-400/30 hover:border-amber-400/60 transition-all duration-300 hover:scale-105 hover:-translate-y-1 animate-in fade-in slide-in-from-right duration-500 delay-200">
                             <div className="flex items-center justify-between mb-2">
                                 <p className="text-amber-100 text-sm font-semibold">⚡ Performance</p>
@@ -248,6 +261,11 @@ export default function InsightsPage() {
                 </div>
             )}
 
+            {/* Google Fit Integration */}
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+                <GoogleFitIntegration />
+            </div>
+
             {/* Enhanced ML Models Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {mlModels.map((model, idx) => {
@@ -261,7 +279,7 @@ export default function InsightsPage() {
                         >
                             {/* Glow effect on hover */}
                             <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-purple-500/0 to-pink-500/0 group-hover:from-purple-500/10 group-hover:to-pink-500/10 transition-all duration-500 -z-10"></div>
-                            
+
                             <div className="flex items-start justify-between mb-5">
                                 <div className="relative">
                                     <div className={`absolute inset-0 bg-gradient-to-br ${colorClasses[model.color as keyof typeof colorClasses]} rounded-xl blur-md opacity-0 group-hover:opacity-50 transition-opacity duration-300`}></div>
@@ -280,17 +298,17 @@ export default function InsightsPage() {
                             <h3 className="text-white font-bold text-xl mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-pink-400 transition-all duration-300">
                                 {model.name}
                             </h3>
-                            
+
                             <p className="text-slate-400 text-sm mb-4 leading-relaxed">
                                 {model.description}
                             </p>
-                            
+
                             {/* Accuracy progress bar */}
                             <div className="mb-4">
                                 <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
-                                    <div 
+                                    <div
                                         className="h-full bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 rounded-full transition-all duration-1000 ease-out group-hover:animate-pulse"
-                                        style={{ 
+                                        style={{
                                             width: model.accuracy,
                                             animationDelay: `${idx * 100}ms`
                                         }}
@@ -332,7 +350,7 @@ export default function InsightsPage() {
                                     </div>
                                 ))}
                             </div>
-                            
+
                             {/* Corner accent */}
                             <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-purple-500/5 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         </div>
@@ -350,7 +368,7 @@ export default function InsightsPage() {
                 {/* Animated Background */}
                 <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-pulse"></div>
                 <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full blur-2xl animate-pulse delay-500"></div>
-                
+
                 <div className="relative flex items-start gap-6">
                     <div className="relative">
                         <div className="absolute inset-0 bg-white/30 rounded-2xl blur-lg animate-pulse"></div>

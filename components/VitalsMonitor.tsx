@@ -20,7 +20,9 @@ interface VitalsData {
 export default function VitalsMonitor() {
     const [vitals, setVitals] = useState<VitalsData | null>(null);
     const [loading, setLoading] = useState(true);
+    const [syncing, setSyncing] = useState(false);
     const [showAddModal, setShowAddModal] = useState(false);
+    const [googleFitConnected, setGoogleFitConnected] = useState(false);
     const [formData, setFormData] = useState({
         heartRate: '',
         restingHeartRate: '',
@@ -32,7 +34,20 @@ export default function VitalsMonitor() {
 
     useEffect(() => {
         fetchVitals();
+        checkGoogleFitConnection();
     }, []);
+
+    const checkGoogleFitConnection = async () => {
+        try {
+            const response = await fetch('/api/user/profile');
+            const data = await response.json();
+            if (data.success && data.user?.googleFit?.isConnected) {
+                setGoogleFitConnected(true);
+            }
+        } catch (error) {
+            console.error('Error checking Google Fit connection:', error);
+        }
+    };
 
     const fetchVitals = async () => {
         try {
@@ -48,9 +63,57 @@ export default function VitalsMonitor() {
         }
     };
 
+    const syncFromGoogleFit = async () => {
+        setSyncing(true);
+        try {
+            const response = await fetch('/api/googlefit/vitals', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ days: 7 })
+            });
+
+            const data = await response.json();
+
+            if (data.success && data.vitals) {
+                // Auto-fill form with Google Fit data
+                setFormData({
+                    heartRate: data.vitals.heartRate?.toString() || '',
+                    restingHeartRate: data.vitals.restingHeartRate?.toString() || '',
+                    bloodOxygen: '',
+                    bloodPressureSystolic: '',
+                    bloodPressureDiastolic: '',
+                    heartRateVariability: ''
+                });
+
+                // Optionally auto-save
+                if (data.vitals.heartRate || data.vitals.restingHeartRate) {
+                    await fetch('/api/vitals', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            heartRate: data.vitals.heartRate,
+                            restingHeartRate: data.vitals.restingHeartRate
+                        })
+                    });
+
+                    await fetchVitals();
+                    alert('✅ Synced heart rate data from Google Fit!');
+                }
+            } else if (data.needsReauth) {
+                alert('Please reconnect Google Fit');
+                window.location.href = '/api/googlefit/connect';
+            }
+        } catch (error) {
+            console.error('Error syncing from Google Fit:', error);
+            alert('Failed to sync from Google Fit');
+        } finally {
+            setSyncing(false);
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         try {
             const response = await fetch('/api/vitals', {
                 method: 'POST',
@@ -88,22 +151,22 @@ export default function VitalsMonitor() {
                 if (value >= 60 && value <= 100) return { status: 'good', color: 'text-green-600', icon: TrendingUp };
                 if (value > 100) return { status: 'high', color: 'text-orange-600', icon: TrendingUp };
                 return { status: 'low', color: 'text-blue-600', icon: TrendingDown };
-            
+
             case 'bloodOxygen':
                 if (value >= 95) return { status: 'good', color: 'text-green-600', icon: TrendingUp };
                 if (value >= 90) return { status: 'fair', color: 'text-yellow-600', icon: Minus };
                 return { status: 'low', color: 'text-red-600', icon: TrendingDown };
-            
+
             case 'bloodPressure':
                 if (value <= 120) return { status: 'good', color: 'text-green-600', icon: TrendingUp };
                 if (value <= 139) return { status: 'elevated', color: 'text-yellow-600', icon: TrendingUp };
                 return { status: 'high', color: 'text-red-600', icon: TrendingUp };
-            
+
             case 'hrv':
                 if (value >= 50) return { status: 'good', color: 'text-green-600', icon: TrendingUp };
                 if (value >= 30) return { status: 'fair', color: 'text-yellow-600', icon: Minus };
                 return { status: 'low', color: 'text-orange-600', icon: TrendingDown };
-            
+
             default:
                 return { status: 'unknown', color: 'text-gray-600', icon: Minus };
         }
@@ -141,12 +204,35 @@ export default function VitalsMonitor() {
                         Track your heart health and vital metrics
                     </p>
                 </div>
-                <button
-                    onClick={() => setShowAddModal(true)}
-                    className="px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-lg hover:from-rose-600 hover:to-pink-600 transition-all shadow-md hover:shadow-lg"
-                >
-                    + Add Reading
-                </button>
+                <div className="flex gap-2">
+                    {googleFitConnected && (
+                        <button
+                            onClick={syncFromGoogleFit}
+                            disabled={syncing}
+                            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all shadow-md hover:shadow-lg disabled:opacity-50 flex items-center gap-2"
+                        >
+                            {syncing ? (
+                                <>
+                                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                    Syncing...
+                                </>
+                            ) : (
+                                <>
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                    </svg>
+                                    Sync from Google Fit
+                                </>
+                            )}
+                        </button>
+                    )}
+                    <button
+                        onClick={() => setShowAddModal(true)}
+                        className="px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-lg hover:from-rose-600 hover:to-pink-600 transition-all shadow-md hover:shadow-lg"
+                    >
+                        + Add Reading
+                    </button>
+                </div>
             </div>
 
             {/* Vitals Cards Grid */}
