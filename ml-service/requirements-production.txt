@@ -12,6 +12,11 @@ scipy
 # Data Processing
 joblib
 
+# Quantum ML
+pennylane
+pennylane-qiskit
+qiskit
+
 # Utilities
 python-dotenv
 requests
