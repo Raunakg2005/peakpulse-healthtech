@@ -1,0 +1,21 @@
+fastapi
+uvicorn[standard]
+pydantic
+python-multipart
+
+# ML Core (lightweight)
+scikit-learn
+pandas
+numpy
+scipy
+
+# Data Processing
+joblib
+
+# Utilities
+python-dotenv
+requests
+aiohttp
+
+# Logging and Monitoring
+python-json-logger
