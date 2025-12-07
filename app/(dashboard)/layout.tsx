@@ -15,7 +15,8 @@ import {
     LogOut,
     Menu,
     X,
-    Calendar
+    Calendar,
+    UserPlus
 } from 'lucide-react';
 import { getAvatarById, getDefaultAvatar } from '@/lib/avatars';
 
@@ -55,6 +56,7 @@ export default function DashboardLayout({
         { name: 'Calendar', href: '/dashboard/calendar', icon: Calendar },
         { name: 'Challenges', href: '/dashboard/challenges', icon: Target },
         { name: 'Social', href: '/dashboard/social', icon: Users },
+        { name: 'Friends', href: '/dashboard/friends', icon: UserPlus },
         { name: 'Insights', href: '/dashboard/insights', icon: Brain },
         { name: 'Achievements', href: '/achievements', icon: Trophy },
         { name: 'Leaderboard', href: '/leaderboard', icon: Medal },
@@ -141,7 +143,7 @@ export default function DashboardLayout({
                                 );
                             })}
                         </div>
-                        
+
                         {/* Sign Out button at bottom */}
                         <div className="mt-auto pt-4 border-t border-slate-200">
                             <button

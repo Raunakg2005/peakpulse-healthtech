@@ -12,6 +12,7 @@ export default function ProfilePage() {
     const [editing, setEditing] = useState(false);
     const [userData, setUserData] = useState<any>(null);
     const [selectedAvatar, setSelectedAvatar] = useState<string>('');
+    const [selectedStatus, setSelectedStatus] = useState<'active' | 'non-active' | 'rest-day'>('active');
     const [formData, setFormData] = useState({
         name: '',
         age: '',
@@ -42,6 +43,7 @@ export default function ProfilePage() {
             const user = data.user || data; // Handle both response formats
             setUserData(user);
             setSelectedAvatar(user.avatar || 'boy_1');
+            setSelectedStatus(user.status || 'active');
 
             // Populate form data
             setFormData({
@@ -109,6 +111,23 @@ export default function ProfilePage() {
             console.error('Failed to save profile:', error);
         } finally {
             setSaving(false);
+        }
+    };
+
+    const handleStatusUpdate = async (newStatus: 'active' | 'non-active' | 'rest-day') => {
+        try {
+            const response = await fetch('/api/user/status', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+            });
+
+            if (response.ok) {
+                setSelectedStatus(newStatus);
+                await fetchUserProfile();
+            }
+        } catch (error) {
+            console.error('Failed to update status:', error);
         }
     };
 
@@ -219,8 +238,8 @@ export default function ProfilePage() {
                                 onClick={() => editing && setSelectedAvatar(avatar.id)}
                                 disabled={!editing}
                                 className={`relative p-2 rounded-xl border-2 transition-all group ${isSelected
-                                        ? 'border-teal-500 bg-teal-50 scale-105'
-                                        : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                                    ? 'border-teal-500 bg-teal-50 scale-105'
+                                    : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                                     } ${!editing ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}
                             >
                                 <div className="aspect-square relative w-full rounded-lg overflow-hidden mb-2 shadow-sm">
@@ -239,6 +258,101 @@ export default function ProfilePage() {
                             </button>
                         );
                     })}
+                </div>
+            </div>
+
+            {/* Activity Status */}
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+                <h2 className="text-xl font-bold text-slate-900 mb-2">Activity Status</h2>
+                <p className="text-sm text-slate-600 mb-4">Let your friends know your current activity status</p>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* Active Status */}
+                    <button
+                        onClick={() => handleStatusUpdate('active')}
+                        className={`relative p-6 rounded-xl border-2 transition-all duration-300 ${selectedStatus === 'active'
+                                ? 'border-green-500 bg-gradient-to-br from-green-50 to-emerald-50 shadow-lg scale-105'
+                                : 'border-slate-200 hover:border-green-300 hover:bg-green-50'
+                            }`}
+                    >
+                        <div className="flex flex-col items-center gap-3">
+                            <div className={`w-16 h-16 rounded-full flex items-center justify-center ${selectedStatus === 'active'
+                                    ? 'bg-gradient-to-br from-green-500 to-emerald-500'
+                                    : 'bg-slate-200'
+                                }`}>
+                                <Activity className={`w-8 h-8 ${selectedStatus === 'active' ? 'text-white' : 'text-slate-500'}`} />
+                            </div>
+                            <div className="text-center">
+                                <p className={`font-bold text-lg ${selectedStatus === 'active' ? 'text-green-700' : 'text-slate-700'}`}>
+                                    Active
+                                </p>
+                                <p className="text-xs text-slate-500 mt-1">Ready to crush goals!</p>
+                            </div>
+                        </div>
+                        {selectedStatus === 'active' && (
+                            <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center shadow-md border-2 border-white">
+                                <span className="text-white text-xs font-bold">✓</span>
+                            </div>
+                        )}
+                    </button>
+
+                    {/* Non-Active Status */}
+                    <button
+                        onClick={() => handleStatusUpdate('non-active')}
+                        className={`relative p-6 rounded-xl border-2 transition-all duration-300 ${selectedStatus === 'non-active'
+                                ? 'border-orange-500 bg-gradient-to-br from-orange-50 to-amber-50 shadow-lg scale-105'
+                                : 'border-slate-200 hover:border-orange-300 hover:bg-orange-50'
+                            }`}
+                    >
+                        <div className="flex flex-col items-center gap-3">
+                            <div className={`w-16 h-16 rounded-full flex items-center justify-center ${selectedStatus === 'non-active'
+                                    ? 'bg-gradient-to-br from-orange-500 to-amber-500'
+                                    : 'bg-slate-200'
+                                }`}>
+                                <span className={`text-2xl ${selectedStatus === 'non-active' ? 'text-white' : 'text-slate-500'}`}>⏸️</span>
+                            </div>
+                            <div className="text-center">
+                                <p className={`font-bold text-lg ${selectedStatus === 'non-active' ? 'text-orange-700' : 'text-slate-700'}`}>
+                                    Non-Active
+                                </p>
+                                <p className="text-xs text-slate-500 mt-1">Taking it easy today</p>
+                            </div>
+                        </div>
+                        {selectedStatus === 'non-active' && (
+                            <div className="absolute -top-2 -right-2 w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center shadow-md border-2 border-white">
+                                <span className="text-white text-xs font-bold">✓</span>
+                            </div>
+                        )}
+                    </button>
+
+                    {/* Rest Day Status */}
+                    <button
+                        onClick={() => handleStatusUpdate('rest-day')}
+                        className={`relative p-6 rounded-xl border-2 transition-all duration-300 ${selectedStatus === 'rest-day'
+                                ? 'border-blue-500 bg-gradient-to-br from-blue-50 to-indigo-50 shadow-lg scale-105'
+                                : 'border-slate-200 hover:border-blue-300 hover:bg-blue-50'
+                            }`}
+                    >
+                        <div className="flex flex-col items-center gap-3">
+                            <div className={`w-16 h-16 rounded-full flex items-center justify-center ${selectedStatus === 'rest-day'
+                                    ? 'bg-gradient-to-br from-blue-500 to-indigo-500'
+                                    : 'bg-slate-200'
+                                }`}>
+                                <span className={`text-2xl ${selectedStatus === 'rest-day' ? 'text-white' : 'text-slate-500'}`}>😴</span>
+                            </div>
+                            <div className="text-center">
+                                <p className={`font-bold text-lg ${selectedStatus === 'rest-day' ? 'text-blue-700' : 'text-slate-700'}`}>
+                                    Rest Day
+                                </p>
+                                <p className="text-xs text-slate-500 mt-1">Recovery is important!</p>
+                            </div>
+                        </div>
+                        {selectedStatus === 'rest-day' && (
+                            <div className="absolute -top-2 -right-2 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center shadow-md border-2 border-white">
+                                <span className="text-white text-xs font-bold">✓</span>
+                            </div>
+                        )}
+                    </button>
                 </div>
             </div>
 

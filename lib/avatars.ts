@@ -40,7 +40,8 @@ export const AVATARS: Avatar[] = [
     }
 ];
 
-export function getAvatarById(id: string): Avatar | undefined {
+export function getAvatarById(id?: string): Avatar | undefined {
+    if (!id) return undefined;
     return AVATARS.find(avatar => avatar.id === id);
 }
 

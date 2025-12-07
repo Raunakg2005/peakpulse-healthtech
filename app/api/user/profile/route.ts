@@ -25,6 +25,7 @@ export async function GET(req: NextRequest) {
                 name: user.name,
                 email: user.email,
                 avatar: user.avatar,
+                status: user.status,
                 profile: user.profile,
                 stats: user.stats,
                 mlData: user.mlData,
@@ -90,6 +91,7 @@ export async function PATCH(req: NextRequest) {
                 name: user.name,
                 email: user.email,
                 avatar: user.avatar,
+                status: user.status,
                 profile: user.profile,
             },
         });

@@ -12,6 +12,7 @@ export interface IUser {
     resetToken?: string;
     resetTokenExpiry?: Date;
     onboardingCompleted: boolean;
+    status?: 'active' | 'non-active' | 'rest-day';
 
     profile: {
         age?: number;
@@ -79,6 +80,11 @@ const UserSchema = new Schema<IUser>({
     verificationToken: String,
     resetToken: String,
     resetTokenExpiry: Date,
+    status: {
+        type: String,
+        enum: ['active', 'non-active', 'rest-day'],
+        default: 'active'
+    },
 
     profile: {
         age: Number,

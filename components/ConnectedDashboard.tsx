@@ -158,14 +158,16 @@ export default function ConnectedDashboard() {
                                 <Brain className="w-6 h-6 text-white" />
                             </div>
                             <span className="text-3xl font-bold text-white">
-                                {data?.ml?.dropout_probability
-                                    ? `${(data.ml.dropout_probability * 100).toFixed(1)}%`
-                                    : 'N/A'}
+                                {data?.ml?.predictions?.dropout?.dropout_probability
+                                    ? `${(data.ml.predictions.dropout.dropout_probability * 100).toFixed(1)}%`
+                                    : data?.mlData?.dropoutRisk
+                                    ? `${(data.mlData.dropoutRisk * 100).toFixed(1)}%`
+                                    : '...'}
                             </span>
                         </div>
                         <p className="text-white font-semibold text-lg">Dropout Risk</p>
                         <p className="text-emerald-50 text-sm mt-1">
-                            ✨ {data?.ml?.risk_level === 'low' ? 'Excellent!' : 'Keep going!'}
+                            ✨ {data?.ml?.predictions?.dropout?.risk_level === 'low' ? 'Excellent!' : 'Keep going!'}
                         </p>
                     </div>
                 </div>
