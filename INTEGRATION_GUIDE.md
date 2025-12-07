@@ -13,6 +13,8 @@ All backend endpoints wrapped in easy-to-use functions:
 - `fetchUserChallenges(status)` - Get user's challenges
 - `fetchMLPredictions()` - Get ML predictions
 - `fetchLeaderboard(limit)` - Get top users
+- `syncGoogleFit()` - Sync Google Fit data
+- `chatWithBot(message, history)` - AI chatbot interaction
 
 ### Connected Component (`components/ConnectedDashboard.tsx`)
 Example dashboard using real API data - can be used as reference or replacement.

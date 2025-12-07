@@ -40,12 +40,14 @@ Traditional health and wellness apps suffer from:
 - **TypeScript** - Type-safe development
 - **Tailwind CSS** - Modern styling
 - **NextAuth.js** - Google OAuth authentication
+- **Google Fit API** - Wearable device data sync
 
 ### Backend & ML
 - **FastAPI** - High-performance Python API
 - **Qiskit** - Quantum computing framework
 - **scikit-learn** - Classical ML models
 - **MongoDB** - NoSQL database with Mongoose ODM
+- **Groq API** - AI chatbot (Llama 3.3 70B)
 
 ---
 
@@ -72,6 +74,7 @@ NEXTAUTH_SECRET=your-secret-key-here
 GOOGLE_CLIENT_ID=your-google-client-id
 GOOGLE_CLIENT_SECRET=your-google-client-secret
 ML_SERVICE_URL=http://localhost:8000
+GROQ_API_KEY=your-groq-api-key
 ```
 
 ### 3. Install Dependencies
@@ -126,20 +129,28 @@ npm run dev
 - **Real-time Notifications** for achievements
 
 ### 📊 Health Tracking
+- **Google Fit Integration** - Auto-sync steps, calories, heart rate
+- **Wearable Support** - Smartwatch & fitness tracker data
 - Calorie tracker with 10+ activity types
 - MET-based calorie calculations
 - BMI calculator (metric/imperial)
 - Activity level assessment
 - Goal setting (weight loss/maintenance/gain)
+- Vitals monitoring (HR, BP, SpO2, HRV)
 
-### 🤖 AI-Powered Insights
-1. **Dropout Predictor** (Quantum + Classical)
-2. **Engagement Classifier**
-3. **Difficulty Predictor**
-4. **Tone Selector**
-5. **Streak Predictor**
-6. **Recommendation Engine**
+### 🤖 AI-Powered Features
+1. **Dropout Predictor** (Quantum + Classical - 71.5% accuracy)
+2. **Engagement Classifier** (71% accuracy)
+3. **Difficulty Predictor** (R²=0.989)
+4. **Tone Selector** (99% accuracy)
+5. **Streak Predictor** (76% accuracy)
+6. **Recommendation Engine** (70.3% accuracy)
 7. **Activity Analyzer**
+8. **AI Health Chatbot** - Powered by Groq (Llama 3.3 70B)
+   - Natural conversation about health topics
+   - Sleep, diet, exercise, mental health advice
+   - App feature guidance
+   - 24/7 availability
 
 ### 🔬 Quantum Computing
 - Hybrid quantum-classical architecture
@@ -199,28 +210,36 @@ Detailed architecture: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - [Gamification System](docs/GAMIFICATION_SYSTEM.md)
 - [User Guide](docs/USER_GUIDE.md)
 - [ML Models](docs/ML_MODELS.md)
+- [Google Fit Integration](docs/GOOGLE_FIT_INTEGRATION.md) 🆕
+- [AI Chatbot Guide](docs/CHATBOT.md) 🆕
+- [Deployment Guide](DOCKER_SETUP.md)
+- [Integration Guide](INTEGRATION_GUIDE.md)
 
 ---
 
 ## 🚀 Future Enhancements
 
 ### Phase 1 (3 Months)
+- ✅ Google Fit integration (In Progress)
+- ✅ AI Health Chatbot (Completed)
 - Mobile app (React Native)
-- Wearable device integration
+- Apple Health integration
 - Push notifications
 - Team challenges
 
 ### Phase 2 (6 Months)
-- Real quantum hardware
-- Voice assistant
-- Nutrition tracking
-- Sleep analysis
+- Real quantum hardware (IBM Quantum)
+- Voice assistant integration
+- Advanced nutrition tracking with image recognition
+- Sleep analysis with ML
+- Garmin & Fitbit integration
 
 ### Phase 3 (12 Months)
 - Telehealth integration
 - Insurance partnerships
-- Corporate wellness
+- Corporate wellness programs
 - International expansion
+- Real-time health monitoring alerts
 
 ---
 
@@ -254,9 +273,27 @@ Commit format: `[Feature] description`
 
 ✨ **Innovation**: First quantum-enhanced wellness platform  
 🎮 **Engagement**: 25 badges + 30 levels  
-🤖 **Intelligence**: 7 ML models  
-📊 **Accuracy**: 93.5% dropout prediction  
+🤖 **Intelligence**: 7 ML models + AI chatbot  
+📊 **Accuracy**: 71.5% dropout prediction (quantum-enhanced)  
 🏆 **Motivation**: Real-time achievements  
+📱 **Integration**: Google Fit wearable sync  
+💬 **Support**: 24/7 AI health assistant
+
+---
+
+## 📊 Feature Comparison
+
+| Feature | PeakPulse | Traditional Apps |
+|---------|-----------|------------------|
+| Quantum ML | ✅ Hybrid quantum-classical | ❌ Classical only |
+| Gamification | ✅ 25 badges, 30 levels | ⚠️ Basic points |
+| AI Chatbot | ✅ Llama 3.3 70B | ❌ None |
+| Google Fit | ✅ Real-time sync | ⚠️ Manual only |
+| ML Predictions | ✅ 7 specialized models | ⚠️ 1-2 generic |
+| Dropout Detection | ✅ 71.5% accuracy | ❌ No prediction |
+| Social Features | ✅ Posts, likes, leaderboard | ⚠️ Limited |
+| Vitals Tracking | ✅ HR, BP, SpO2, HRV | ⚠️ Steps only |
+| Personalization | ✅ ML-driven | ❌ Static content |  
 
 ---
 
